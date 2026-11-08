@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { loadConfig, type Config } from './config.ts';
+import { loadConfig, PROJECT_ROOT, type Config } from './config.ts';
 import { initDatabase } from './db.ts';
 import { validateEvent, ingest } from './events.ts';
 import { getSnapshot, sweepStale, getRecentTasks } from './state.ts';
@@ -227,7 +227,88 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
       return;
     }
 
-    // 6. Static files dari public/
+    // 6. GET /api/office
+    if (pathname === '/api/office' && method === 'GET') {
+      try {
+        const officePath = path.join(PROJECT_ROOT, 'config', 'office.json');
+        const idleLinesPath = path.join(PROJECT_ROOT, 'config', 'idle-lines.json');
+        const officeData = JSON.parse(fs.readFileSync(officePath, 'utf8'));
+        const idleLinesData = JSON.parse(fs.readFileSync(idleLinesPath, 'utf8'));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+          office: officeData,
+          idle_lines: idleLinesData,
+          personas: config.personas,
+        }));
+      } catch {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Failed to load office config' }));
+      }
+      return;
+    }
+
+    // 7. GET /vendor/three/*
+    if (pathname.startsWith('/vendor/three/')) {
+      if (method !== 'GET' && method !== 'HEAD') {
+        res.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Method Not Allowed');
+        return;
+      }
+
+      const subPath = decodeURIComponent(pathname.slice('/vendor/three/'.length));
+      const isAllowedPrefix = subPath.startsWith('build/') || subPath.startsWith('examples/jsm/');
+      if (!isAllowedPrefix) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Not Found');
+        return;
+      }
+
+      const threeRoot = path.resolve(PROJECT_ROOT, 'node_modules', 'three');
+      const targetPath = path.resolve(threeRoot, subPath);
+
+      const allowedBuildDir = path.resolve(threeRoot, 'build');
+      const allowedJsmDir = path.resolve(threeRoot, 'examples', 'jsm');
+      const isInBuild = targetPath.startsWith(allowedBuildDir + path.sep);
+      const isInJsm = targetPath.startsWith(allowedJsmDir + path.sep);
+
+      if (!isInBuild && !isInJsm) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Not Found');
+        return;
+      }
+
+      let stat: fs.Stats;
+      try {
+        stat = fs.statSync(targetPath);
+      } catch {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Not Found');
+        return;
+      }
+
+      if (!stat.isFile()) {
+        res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Not Found');
+        return;
+      }
+
+      const ext = path.extname(targetPath).toLowerCase();
+      const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Content-Length': stat.size,
+      });
+
+      if (method === 'HEAD') {
+        res.end();
+      } else {
+        const stream = fs.createReadStream(targetPath);
+        stream.pipe(res);
+      }
+      return;
+    }
+
+    // 8. Static files dari public/
     if (pathname.startsWith('/api/')) {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Not Found' }));
