@@ -1,0 +1,34 @@
+[
+  {
+    "id": "greg",
+    "name": "Greg",
+    "role": "Lead / Orchestrator",
+    "engine": "Claude Code (sesi utama)",
+    "color": "#6d4fd8",
+    "desk_spot": "desk_greg"
+  },
+  {
+    "id": "betty",
+    "name": "Betty",
+    "role": "Asisten administratif (Google Drive)",
+    "engine": "Claude Code (subagent tipe betty)",
+    "color": "#d6457a",
+    "desk_spot": "desk_betty"
+  },
+  {
+    "id": "alex",
+    "name": "Alex",
+    "role": "Task Force — level teknis",
+    "engine": "agy",
+    "color": "#2f6fd6",
+    "desk_spot": "desk_alex"
+  },
+  {
+    "id": "windry",
+    "name": "Windry",
+    "role": "Task Force — level taktis",
+    "engine": "agy",
+    "color": "#e07a2f",
+    "desk_spot": "desk_windry"
+  }
+]

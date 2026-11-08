@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kantor Weiwu · Tim AI</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: #0f1117;
+      color: #e5e7eb;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #9ca3af;
+      margin-bottom: 24px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #1a1e29;
+      border: 1px solid #2e3446;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .personas-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .persona-card {
+      background: #1a1e29;
+      border: 1px solid #2e3446;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .persona-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .persona-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .persona-role {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+    .persona-task {
+      font-size: 12px;
+      color: #60a5fa;
+      margin-top: 4px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .badge-idle {
+      background: #27272a;
+      color: #a1a1aa;
+    }
+    .badge-working {
+      background: #064e3b;
+      color: #34d399;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kantor Weiwu · Tim AI</h1>
+    <p class="subtitle">Status Tim Realtime</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Delegasi Hari Ini</div>
+        <div class="stat-value" id="stat-delegations">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Aktif Sekarang</div>
+        <div class="stat-value" id="stat-active">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Token Hari Ini</div>
+        <div class="stat-value" id="stat-tokens">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Estimasi Biaya (USD)</div>
+        <div class="stat-value" id="stat-cost">—</div>
+      </div>
+    </div>
+
+    <h2>Anggota Tim</h2>
+    <div class="personas-list" id="personas-container">
+      <p style="color: #6b7280;">Memuat status tim...</p>
+    </div>
+  </div>
+
+  <script>
+    function updateUI(snapshot) {
+      if (!snapshot) return;
+
+      if (snapshot.stats) {
+        document.getElementById('stat-delegations').textContent = snapshot.stats.delegations_today ?? 0;
+        document.getElementById('stat-active').textContent = snapshot.stats.active_now ?? 0;
+        document.getElementById('stat-tokens').textContent = (snapshot.stats.tokens_today ?? 0).toLocaleString();
+        document.getElementById('stat-cost').textContent =
+          snapshot.stats.cost_today_usd != null ? '$' + snapshot.stats.cost_today_usd.toFixed(4) : '—';
+      }
+
+      if (Array.isArray(snapshot.personas)) {
+        const container = document.getElementById('personas-container');
+        container.innerHTML = '';
+        for (const p of snapshot.personas) {
+          const card = document.createElement('div');
+          card.className = 'persona-card';
+
+          const info = document.createElement('div');
+          info.className = 'persona-info';
+
+          const name = document.createElement('div');
+          name.className = 'persona-name';
+          name.textContent = p.name;
+          name.style.color = p.color || '#fff';
+          info.appendChild(name);
+
+          const role = document.createElement('div');
+          role.className = 'persona-role';
+          role.textContent = p.role + ' (' + p.spot + ')';
+          info.appendChild(role);
+
+          if (p.task) {
+            const task = document.createElement('div');
+            task.className = 'persona-task';
+            task.textContent = 'Sedang bekerja: ' + (p.task.title || p.task.id);
+            info.appendChild(task);
+          }
+
+          card.appendChild(info);
+
+          const badge = document.createElement('span');
+          badge.className = 'badge ' + (p.state === 'working' ? 'badge-working' : 'badge-idle');
+          badge.textContent = p.state === 'working' ? 'Bekerja' : 'Santai';
+          card.appendChild(badge);
+
+          container.appendChild(card);
+        }
+      }
+    }
+
+    // Ambil initial state
+    fetch('/api/state')
+      .then(res => res.json())
+      .then(data => updateUI(data))
+      .catch(err => console.error('Gagal memuat status:', err));
+
+    // Langganan SSE stream
+    if (window.EventSource) {
+      const source = new EventSource('/api/stream');
+      source.addEventListener('snapshot', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          updateUI(data);
+        } catch (err) {
+          console.error('Gagal parse SSE data:', err);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
