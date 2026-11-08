@@ -1,0 +1,108 @@
+{
+  "greg": [
+    "Roadmap minggu ini kelihatan rapi. Lanjut ngopi dulu.",
+    "Kompak terus tim! Jangan lupa istirahat sejenak.",
+    "Sprint kali ini on track, aman terkendali.",
+    "Ada ide baru buat efisiensi kerjaan kita?",
+    "Santai dulu 5 menit sebelum delegasi berikutnya.",
+    "Betty, Alex, Windry — mantap kerjaannya hari ini.",
+    "Ngeliat pemandangan kota bentar biar pikiran jernih.",
+    "Kopi pantry aromanya mantap banget siang ini.",
+    "Review delegasi bentar di whiteboard ah.",
+    "Semua sistem berjalan lancar, tim hebat."
+  ],
+  "betty": [
+    "Folder Google Drive udah rapi semua, bersih!",
+    "Izin rehat sejenak ya, habis nata dokumen penting.",
+    "Catatan rapat dan arsip aman tersinkronisasi.",
+    "Ada dokumen yang perlu kutinjau lagi nggak ya?",
+    "Pantry kopi ini penyelamat di sela-sela administrasi.",
+    "Nonton TV bentar sambil nunggu pembaruan status.",
+    "Whiteboard delegasi udah ku-update versinya.",
+    "Semua file spreadsheet sudah rapi di foldernya.",
+    "Tenang, urusan dokumen dan izin akses beres.",
+    "Format laporan bulanan sudah siap dipakai."
+  ],
+  "alex": [
+    "Unit test hijau semua, rasanya damai sekali.",
+    "Refactoring kecil tadi bikin kode jauh lebih enteng.",
+    "Node 24 type-stripping emang praktis banget ya.",
+    "Rehat bentar, nunggu job background kelar.",
+    "Kopi hitam tanpa gula, bahan bakar terbaik buat debugging.",
+    "Arsitektur isometrik 3D ini seru juga dibangun.",
+    "Nggak ada bug yang nggak bisa di-trace.",
+    "Graf waypoint-nya mulus, pathfinding optimal.",
+    "Cek metrik performa dulu... 60 fps stabil!",
+    "Memory footprint aman, nggak ada leak."
+  ],
+  "windry": [
+    "Strategi mitigasi udah siap sebelum insiden muncul.",
+    "Cek perimeter dulu, semua jalur komunikasi aman.",
+    "Prioritas nomor satu: eksekusi cepat dan tepat sasaran.",
+    "Kopi dulu biar fokus taktis tetap tajam.",
+    "Pantry aman, suasana lounge kondusif.",
+    "Peta pergerakan dan rencana taktis udah sinkron.",
+    "Santai tapi tetap waspada, siap dispatch kapan pun.",
+    "Satu langkah lebih maju dari potensi masalah.",
+    "Semua target hari ini tereksekusi sesuai rencana.",
+    "Evaluasi risiko selesai, semua jalur hijau."
+  ],
+  "dialogues": [
+    {
+      "speakers": ["greg", "alex"],
+      "lines": [
+        { "speaker": "greg", "text": "Alex, gimana performa build dan test terakhir?" },
+        { "speaker": "alex", "text": "Stabil banget mas Greg, latency di bawah 10ms dan test hijau." }
+      ]
+    },
+    {
+      "speakers": ["betty", "windry"],
+      "lines": [
+        { "speaker": "betty", "text": "Windry, ringkasan laporan taktis udah masuk Drive ya." },
+        { "speaker": "windry", "text": "Sip mbak Betty, langsung ku-crosscheck sekarang." }
+      ]
+    },
+    {
+      "speakers": ["greg", "betty"],
+      "lines": [
+        { "speaker": "greg", "text": "Betty, dokumen koordinasi minggu ini udah siap?" },
+        { "speaker": "betty", "text": "Udah rapi di folder utama mas, siap ditinjau kapan aja." }
+      ]
+    },
+    {
+      "speakers": ["alex", "windry"],
+      "lines": [
+        { "speaker": "alex", "text": "Windry, skenario mitigasi deployment aman?" },
+        { "speaker": "windry", "text": "Semua skenario fallback udah standby, tinggal gas." }
+      ]
+    },
+    {
+      "speakers": ["greg", "windry"],
+      "lines": [
+        { "speaker": "greg", "text": "Windry, target delegasi berikutnya sudah dipetakan?" },
+        { "speaker": "windry", "text": "Siap mas, fokus ke percepatan respon dan stabilitas jalur." }
+      ]
+    },
+    {
+      "speakers": ["betty", "alex"],
+      "lines": [
+        { "speaker": "betty", "text": "Alex, butuh bantuan dokumentasi endpoint baru?" },
+        { "speaker": "alex", "text": "Boleh banget mbak Betty, biar speknya makin rapi dan jelas." }
+      ]
+    },
+    {
+      "speakers": ["alex", "greg"],
+      "lines": [
+        { "speaker": "alex", "text": "Mas Greg, pipeline pengujian otomatis udah jalan mulus." },
+        { "speaker": "greg", "text": "Mantap Alex, pertahankan kualitas dan kesederhanaannya." }
+      ]
+    },
+    {
+      "speakers": ["windry", "betty"],
+      "lines": [
+        { "speaker": "windry", "text": "Mbak Betty, ngopi bareng dulu di lounge?" },
+        { "speaker": "betty", "text": "Boleh Windry, istirahat 5 menit sebelum tugas baru masuk." }
+      ]
+    }
+  ]
+}
