@@ -105,6 +105,19 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
   padding: 4px 10px;
   border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.header-live-badge.disconnected {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+.header-live-badge.disconnected .pulse-dot {
+  background: #94a3b8;
+  box-shadow: none;
+  animation: none;
 }
 
 .pulse-dot {
@@ -546,6 +559,14 @@ body {
   padding: 9px 8px;
   border-bottom: 1px solid var(--border-color-light);
   color: var(--text-main);
+}
+
+.token-note {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  font-style: italic;
 }
 
 /* Desktop Layout (lebar > 960px) */

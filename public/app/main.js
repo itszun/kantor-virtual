@@ -1,11 +1,12 @@
 /**
- * main.js - Entry point utama aplikasi frontend Kantor Weiwu 3D (Putaran 2)
+ * main.js - Entry point utama aplikasi frontend Kantor Weiwu 3D (Putaran 2 & Live Data)
  */
 import { OfficeScene } from './scene.js';
 import { Character } from './characters.js';
 import { IdleManager } from './idle.js';
 import { DirectorClient } from './director-client.js';
 import { UIManager } from './ui.js';
+import { gregTasks } from './mappers.js';
 
 function isWebGLAvailable() {
   try {
@@ -22,7 +23,8 @@ function isWebGLAvailable() {
 async function startApp() {
   const ui = new UIManager();
   const urlParams = new URLSearchParams(window.location.search);
-  const isDemo = urlParams.get('demo') === '1' || urlParams.get('demo') == null;
+  // Mode demo HANYA aktif bila ?demo=1. Tanpa parameter -> mode live data nyata.
+  const isDemo = urlParams.get('demo') === '1';
 
   // 1. Elemen Dump Debug untuk verifikasi posisi headless testing
   let debugEl = document.getElementById('kantor-debug-dump');
@@ -56,6 +58,7 @@ async function startApp() {
   }
 
   const { office, idle_lines, personas } = configData;
+  ui.setPersonaConfig(personas);
 
   // 4. Inisialisasi Three.js Scene & CSS2D Container
   const canvasEl = document.getElementById('canvas-3d');
@@ -63,29 +66,40 @@ async function startApp() {
   const scene = new OfficeScene(canvasEl, cssContainerEl, office);
 
   // 5. Inisialisasi Karakter Persona dengan Spawn Spot Awal:
-  // Karakter idle muncul di spot lounge / tv / pantry, BUKAN di meja!
-  const initialSpots = {
-    alex: 'desk_alex',   // Alex mulai dengan tugas kerja
-    greg: 'lounge_1',    // Greg santai di sofa lounge 1
-    betty: 'tv',         // Betty santai menonton TV
-    windry: 'coffee',    // Windry menyeduh kopi di pantry
-  };
+  // Pada mode demo: Alex di meja kerja, yang lain di santai.
+  // Pada mode live: SEMUA mulai di spot santai (lounge/tv/coffee). Posisi kerja diatur oleh snapshot.
+  const initialSpots = isDemo
+    ? {
+        alex: 'desk_alex',
+        greg: 'lounge_1',
+        betty: 'tv',
+        windry: 'coffee',
+      }
+    : {
+        alex: 'lounge_2',
+        greg: 'lounge_1',
+        betty: 'tv',
+        windry: 'coffee',
+      };
 
   const charactersMap = new Map();
   personas.forEach((p) => {
-    const startSpot = initialSpots[p.id] || (p.id === 'alex' ? `desk_${p.id}` : 'lounge_1');
+    const startSpot = initialSpots[p.id] || 'lounge_1';
     const char = new Character(p, office, scene.scene, startSpot);
     charactersMap.set(p.id, char);
   });
 
   // 6. Inisialisasi Idle Manager & Director Client
   const idleManager = new IdleManager(charactersMap, office, idle_lines);
-  idleManager.initInitialSpots('alex'); // Alex sedang kerja di meja, persona lain di spot santai
+  if (isDemo) {
+    idleManager.initInitialSpots('alex');
+    // Nyalakan monitor meja Alex pada mode demo
+    scene.setDeskMonitor('desk_alex', true, '#2f6fd6');
+  } else {
+    idleManager.initInitialSpots();
+  }
 
   const directorClient = new DirectorClient(charactersMap, scene, idleManager, office);
-
-  // Nyalakan monitor meja Alex sejak awal
-  scene.setDeskMonitor('desk_alex', true, '#2f6fd6');
 
   // 7. Definisi window.__kantorDebug untuk verifikasi posisi & state
   window.__kantorDebug = () => {
@@ -109,7 +123,7 @@ async function startApp() {
   };
   updateDebugDom();
 
-  // 8. Data Contoh & Logika Mode Demo (?demo=1)
+  // 8. Logika Mode Demo (?demo=1) vs Mode Live (Data Nyata)
   if (isDemo) {
     const demoTasks = [
       { persona: 'alex', title: 'Optimasi shortestPath graf waypoint', id: 'TSK-101' },
@@ -167,6 +181,18 @@ async function startApp() {
       { text: 'Greg santai di lounge', time: '3m lalu', icon: '☕' },
     ]);
 
+    // Whiteboard demo
+    scene.updateWhiteboard('wb_delegation', [
+      'Optimasi shortestPath graf',
+      'Update config/office.json',
+      'Arsip koordinasi sprint',
+    ]);
+    scene.updateWhiteboard('wb_greg', [
+      'Review kesiapan PLAN-004',
+      'Koordinasi arsitektur frontend',
+      'Penyelarasan parameter',
+    ]);
+
     // Simulasi pergantian tugas demo berkala (tiap 25 detik)
     let currentTaskIdx = 0;
     setInterval(() => {
@@ -191,11 +217,74 @@ async function startApp() {
       updateDebugDom();
     }, 25000);
   } else {
-    // Mode Live: Ambil initial snapshot dari /api/state
+    // Mode Live: Digerakkan data nyata dari kantor-api
+    let latestPersonas = personas;
+
+    function applyHistory(tasks, pList) {
+      const p = pList || latestPersonas;
+      ui.updateHistory(tasks, p);
+      ui.updateGregTasks(tasks);
+      ui.updateActivityLogs(tasks, p);
+
+      // Whiteboard "Delegasi terbaru" & "Tugas Greg" di 3D:
+      // gambar ulang CanvasTexture dari 3 judul terakhir (potong 28 karakter) saat history berubah
+      const delegationTitles = (tasks || []).slice(0, 3).map((t) => t.title || 'Tugas tanpa judul');
+      scene.updateWhiteboard('wb_delegation', delegationTitles);
+
+      const gregList = gregTasks(tasks || []);
+      const gregTitles = gregList.slice(0, 3).map((t) => t.title || 'Tugas tanpa judul');
+      scene.updateWhiteboard('wb_greg', gregTitles);
+    }
+
+    async function loadHistory() {
+      try {
+        const histRes = await fetch('/api/history?limit=40');
+        if (histRes.ok) {
+          const historyData = await histRes.json();
+          applyHistory(historyData, latestPersonas);
+        } else {
+          applyHistory([], latestPersonas);
+        }
+      } catch (err) {
+        console.warn('Gagal memuat /api/history:', err);
+        applyHistory([], latestPersonas);
+      }
+    }
+
+    async function loadUsage() {
+      try {
+        const usageRes = await fetch('/api/usage?days=7');
+        if (usageRes.ok) {
+          const usageData = await usageRes.json();
+          ui.updateUsage(usageData, latestPersonas);
+        } else {
+          ui.updateUsage(null, latestPersonas);
+        }
+      } catch (err) {
+        console.warn('Gagal memuat /api/usage:', err);
+        ui.updateUsage(null, latestPersonas);
+      }
+    }
+
+    // Debounce timer
+    let historyDebounceTimer = null;
+    function scheduleHistoryReload() {
+      if (historyDebounceTimer) clearTimeout(historyDebounceTimer);
+      historyDebounceTimer = setTimeout(loadHistory, 2000);
+    }
+
+    let usageDebounceTimer = null;
+    function scheduleUsageReload() {
+      if (usageDebounceTimer) clearTimeout(usageDebounceTimer);
+      usageDebounceTimer = setTimeout(loadUsage, 30000);
+    }
+
+    // 1. Ambil initial snapshot dari /api/state
     try {
       const stateRes = await fetch('/api/state');
       if (stateRes.ok) {
         const initialSnapshot = await stateRes.json();
+        if (initialSnapshot.personas) latestPersonas = initialSnapshot.personas;
         directorClient.applyState(initialSnapshot);
         ui.updateSnapshot(initialSnapshot, charactersMap);
       }
@@ -203,26 +292,34 @@ async function startApp() {
       console.warn('Gagal memuat /api/state:', err);
     }
 
-    // Ambil data riwayat tugas
-    try {
-      const histRes = await fetch('/api/history?limit=20');
-      if (histRes.ok) {
-        const historyData = await histRes.json();
-        ui.updateHistory(historyData);
-      }
-    } catch {
-      // Abaikan bila belum ada
-    }
+    // 2. Ambil data riwayat tugas dan penggunaan token
+    await loadHistory();
+    await loadUsage();
 
-    // Sambungkan ke SSE /api/stream
+    // 3. Sambungkan ke SSE /api/stream
     if (window.EventSource) {
       const sse = new EventSource('/api/stream');
+
+      sse.onopen = () => {
+        ui.setConnectionStatus(true);
+      };
+
+      sse.onerror = () => {
+        ui.setConnectionStatus(false);
+      };
+
       sse.addEventListener('snapshot', (e) => {
         try {
+          ui.setConnectionStatus(true);
           const snapshot = JSON.parse(e.data);
+          if (snapshot.personas) latestPersonas = snapshot.personas;
           directorClient.applyState(snapshot);
           ui.updateSnapshot(snapshot, charactersMap);
           updateDebugDom();
+
+          // Debounce reload history (2s) dan usage (30s)
+          scheduleHistoryReload();
+          scheduleUsageReload();
         } catch (err) {
           console.error('Error parse SSE snapshot:', err);
         }

@@ -10,15 +10,19 @@ export class OfficeScene {
     this.canvas = canvasElement;
     this.cssContainer = cssContainerElement;
     this.config = officeConfig || {};
-    this.monitorsByDesk = new Map(); // desk_id -> array of MeshStandardMaterial
+    this.monitorsByDesk = new Map(); // desk_id -> array of { screenMat, glowBarMat }
+    this.whiteboards = new Map(); // id -> { boardMat, title, texture }
 
     this.init();
   }
 
   calcViewSize(width, height) {
-    // Pada HP (< 600px): karakter tampak ±2x lebih besar, lantai mengisi ±95% kanvas
-    if (width < 600) {
-      return 6.6;
+    const aspect = width / height;
+    // Pada HP (< 520px): seluruh 4 meja + lounge + pantry terlihat tanpa terpotong
+    if (width < 520) {
+      return Math.max(7.8, 9.2 / Math.max(aspect, 0.6));
+    } else if (width < 600) {
+      return 7.5;
     } else if (width < 1000) {
       return 8.2;
     } else {
@@ -47,7 +51,7 @@ export class OfficeScene {
     );
     // Sudut isometrik dari depan-kanan-atas
     this.camera.position.set(22, 22, 22);
-    this.camera.lookAt(0, 0.4, 0);
+    this.camera.lookAt(0.2, 0.4, -0.5);
 
     // 3. Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -78,7 +82,7 @@ export class OfficeScene {
     this.controls.maxPolarAngle = Math.PI / 2.8;
     this.controls.minAzimuthAngle = Math.PI / 12;
     this.controls.maxAzimuthAngle = Math.PI / 2.2;
-    this.controls.target.set(0, 0.4, 0);
+    this.controls.target.set(0.2, 0.4, -0.5);
 
     // 6. Pencahayaan Hangat
     this.setupLighting();
@@ -423,11 +427,20 @@ export class OfficeScene {
         screen.position.set(0, 0.28, 0.025);
         group.add(screen);
 
+        // Glow indicator bar di atas monitor agar jelas terlihat dari sudut kamera manapun
+        const glowBarMat = new THREE.MeshBasicMaterial({
+          color: 0x000000,
+          visible: false,
+        });
+        const glowBar = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.05, 0.05), glowBarMat);
+        glowBar.position.set(0, 0.49, 0);
+        group.add(glowBar);
+
         if (f.target) {
           if (!this.monitorsByDesk.has(f.target)) {
             this.monitorsByDesk.set(f.target, []);
           }
-          this.monitorsByDesk.get(f.target).push(screenMat);
+          this.monitorsByDesk.get(f.target).push({ screenMat, glowBarMat });
         }
 
         group.position.set(pos[0], pos[1] - 0.15, pos[2]);
@@ -633,8 +646,8 @@ export class OfficeScene {
         const [w, h, d] = f.size || [2.4, 1.4, 0.08];
         const title = f.title || 'Papan Informasi';
         const lines = f.id === 'wb_delegation'
-          ? ['Integrasi API Server v0.1 Selesai', 'Worktree isolasi aktif', 'Sistem pelaporan otomatis']
-          : ['Sprint Prioritas Minggu Ini', 'Review kode dan performa 60fps', 'Kompak & rapi selalu'];
+          ? ['Belum ada delegasi']
+          : ['Belum ada tugas Greg'];
 
         const texture = this.createWhiteboardTexture(title, lines);
         const group = new THREE.Group();
@@ -645,15 +658,20 @@ export class OfficeScene {
         );
         group.add(frame);
         // Permukaan papan
+        const boardMat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.2 });
         const board = new THREE.Mesh(
           new THREE.PlaneGeometry(w, h),
-          new THREE.MeshStandardMaterial({ map: texture, roughness: 0.2 })
+          boardMat
         );
         board.position.z = d / 2 + 0.005;
         group.add(board);
 
         group.position.set(pos[0], pos[1], pos[2]);
         this.scene.add(group);
+
+        if (f.id) {
+          this.whiteboards.set(f.id, { boardMat, title, texture });
+        }
       }
 
       else if (f.type === 'window') {
@@ -712,19 +730,50 @@ export class OfficeScene {
   }
 
   setDeskMonitor(deskSpot, active, colorHex = '#60a5fa') {
-    const screens = this.monitorsByDesk.get(deskSpot);
-    if (!screens) return;
+    const monitors = this.monitorsByDesk.get(deskSpot);
+    if (!monitors) return;
     const color = new THREE.Color(colorHex);
 
-    screens.forEach((mat) => {
+    monitors.forEach(({ screenMat, glowBarMat }) => {
       if (active) {
-        mat.emissive.copy(color);
-        mat.emissiveIntensity = 0.85;
+        screenMat.color.copy(color);
+        screenMat.emissive.copy(color);
+        screenMat.emissiveIntensity = 2.0;
+        if (glowBarMat) {
+          glowBarMat.color.copy(color);
+          glowBarMat.visible = true;
+        }
       } else {
-        mat.emissive.set(0x000000);
-        mat.emissiveIntensity = 0;
+        screenMat.color.set(0x111111);
+        screenMat.emissive.set(0x000000);
+        screenMat.emissiveIntensity = 0;
+        if (glowBarMat) {
+          glowBarMat.visible = false;
+        }
       }
     });
+  }
+
+  updateWhiteboard(id, lines = []) {
+    const wb = this.whiteboards.get(id);
+    if (!wb) return;
+
+    const safeLines = lines.slice(0, 3).map((l) => {
+      const str = String(l || '').trim();
+      return str.length > 28 ? str.slice(0, 27) + '…' : str;
+    });
+
+    if (safeLines.length === 0) {
+      safeLines.push(id === 'wb_delegation' ? 'Belum ada delegasi' : 'Belum ada tugas Greg');
+    }
+
+    const newTex = this.createWhiteboardTexture(wb.title, safeLines);
+    if (wb.texture) {
+      wb.texture.dispose();
+    }
+    wb.texture = newTex;
+    wb.boardMat.map = newTex;
+    wb.boardMat.needsUpdate = true;
   }
 
   onResize() {
