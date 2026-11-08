@@ -15,8 +15,51 @@ export class UIManager {
     this.lastSnapshot = null;
     this.isConnected = true;
     this.engineById = new Map();
+    this.zoneButtons = new Map();
+    this.onSelectZone = null;
     this.initClock();
     this.initTabs();
+  }
+
+  initZoneControls(zones, onSelectZone) {
+    const bar = document.getElementById('zone-focus-bar');
+    if (!bar) return;
+    this.onSelectZone = onSelectZone;
+    this.zoneButtons.clear();
+
+    const overviewBtn = document.getElementById('btn-zone-overview');
+    if (overviewBtn) {
+      overviewBtn.onclick = () => {
+        this.setActiveZone('');
+        if (this.onSelectZone) this.onSelectZone(null);
+      };
+      this.zoneButtons.set('', overviewBtn);
+    }
+
+    for (const zone of zones || []) {
+      const btn = document.createElement('button');
+      btn.className = 'zone-chip';
+      btn.dataset.zone = zone.id;
+      btn.textContent = zone.label;
+      btn.onclick = () => {
+        this.setActiveZone(zone.id);
+        if (this.onSelectZone) this.onSelectZone(zone.id);
+      };
+      bar.appendChild(btn);
+      this.zoneButtons.set(zone.id, btn);
+    }
+  }
+
+  setActiveZone(zoneId) {
+    const id = zoneId || '';
+    for (const [key, btn] of this.zoneButtons) {
+      if (key === id) {
+        btn.classList.add('active');
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      } else {
+        btn.classList.remove('active');
+      }
+    }
   }
 
   setPersonaConfig(personas) {

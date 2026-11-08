@@ -1,10 +1,22 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { buildV6Prop } from './props-v6.js';
 
 const CELL_ORIGINS = { NW: [-8, -6], N: [0, -6], NE: [8, -6], W: [-8, 0], C: [0, 0], E: [8, 0], SW: [-8, 6], S: [0, 6], SE: [8, 6] };
 const FLOOR_COLORS = { wood: 0xb98255, tatami: 0xb8aa67, tile: 0x8e9aa7, deck: 0x9b6b43, carpet: 0x8e779b };
+const ZONE_LABEL_POS = {
+  executive: [-8, -4.2],
+  lobby: [0, -4.2],
+  meditation: [8, -4.2],
+  game_ram: [-7.6, -0.4],
+  tatami: [0, 2.0],
+  workroom: [7.8, 0],
+  pantry: [-8, 4.8],
+  meeting: [0, 4.2],
+  balcony: [8, 5.4]
+};
 
 export class OfficeScene {
   constructor(canvasElement, cssContainerElement, officeConfig) {
@@ -49,7 +61,7 @@ export class OfficeScene {
     this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: false });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 520 ? 1.5 : 2));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
@@ -94,20 +106,45 @@ export class OfficeScene {
 
   buildRoom() {
     const seen = new Set();
+    const wallGeometries = [];
+    const floorGeometriesByColor = new Map();
+
     for (const zone of this.config.zones || []) {
       const bounds = this.zoneBounds(zone);
       this.zoneCenters.set(zone.id, new THREE.Vector3(bounds.x, 0, bounds.z));
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(7.92, 5.92), this.material(`floor-${zone.floor}`, FLOOR_COLORS[zone.floor] || 0xb98255));
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.set(bounds.x, zone.id === 'tatami' ? -0.08 : 0, bounds.z);
-      floor.receiveShadow = true;
-      this.scene.add(floor);
+
+      // Floor geometry collected per color
+      const floorColor = FLOOR_COLORS[zone.floor] || 0xb98255;
+      const floorGeom = new THREE.PlaneGeometry(7.92, 5.92);
+      floorGeom.rotateX(-Math.PI / 2);
+      floorGeom.translate(bounds.x, zone.id === 'tatami' ? -0.08 : 0, bounds.z);
+      if (!floorGeometriesByColor.has(floorColor)) {
+        floorGeometriesByColor.set(floorColor, []);
+      }
+      floorGeometriesByColor.get(floorColor).push(floorGeom);
+
       this.addZoneLabel(zone, bounds);
-      this.addOwnedWalls(zone, bounds, seen);
+      this.addOwnedWalls(zone, bounds, seen, wallGeometries);
+    }
+
+    // Merge floor geometries per material to reduce draw calls
+    for (const [color, geoms] of floorGeometriesByColor) {
+      const mergedFloor = BufferGeometryUtils.mergeGeometries(geoms, false);
+      const floorMesh = new THREE.Mesh(mergedFloor, this.material(`floor-${color}`, color));
+      floorMesh.receiveShadow = true;
+      this.scene.add(floorMesh);
+    }
+
+    // Merge wall geometries into a single mesh
+    if (wallGeometries.length > 0) {
+      const mergedWalls = BufferGeometryUtils.mergeGeometries(wallGeometries, false);
+      const wallsMesh = new THREE.Mesh(mergedWalls, this.material('wall', 0xf0dfca));
+      wallsMesh.receiveShadow = true;
+      this.scene.add(wallsMesh);
     }
   }
 
-  addOwnedWalls(zone, bounds, seen) {
+  addOwnedWalls(zone, bounds, seen, wallGeometries) {
     const edges = [
       { side: 'N', key: `h:${bounds.minZ}:${bounds.x}`, x: bounds.x, z: bounds.minZ, length: 8, outer: bounds.minZ === -9 },
       { side: 'W', key: `v:${bounds.minX}:${bounds.z}`, x: bounds.minX, z: bounds.z, length: 6, outer: bounds.minX === -12 },
@@ -120,52 +157,92 @@ export class OfficeScene {
       const isBack = edge.outer && (edge.side === 'N' || edge.side === 'W');
       const height = isBack ? 2.4 : 0.75;
       const door = (zone.doors || []).find((d) => d.side === edge.side);
-      this.addWallWithDoor(edge, height, door);
+      this.addWallWithDoor(edge, height, door, wallGeometries);
     }
   }
 
-  addWallWithDoor(edge, height, door) {
+  addWallWithDoor(edge, height, door, wallGeometries) {
     const off = door?.offset || 0;
     const parts = door ? [[-edge.length / 2, off - door.width / 2], [off + door.width / 2, edge.length / 2]] : [[-edge.length / 2, edge.length / 2]];
     for (const [start, end] of parts) {
       const length = end - start;
       if (length <= 0.02) continue;
       const horizontal = edge.side === 'N' || edge.side === 'S';
-      const mesh = new THREE.Mesh(new THREE.BoxGeometry(horizontal ? length : 0.16, height, horizontal ? 0.16 : length), this.material('wall', 0xf0dfca));
-      mesh.position.set(edge.x + (horizontal ? (start + end) / 2 : 0), height / 2, edge.z + (horizontal ? 0 : (start + end) / 2));
-      mesh.receiveShadow = true;
-      this.scene.add(mesh);
+      const geom = new THREE.BoxGeometry(horizontal ? length : 0.16, height, horizontal ? 0.16 : length);
+      geom.translate(
+        edge.x + (horizontal ? (start + end) / 2 : 0),
+        height / 2,
+        edge.z + (horizontal ? 0 : (start + end) / 2)
+      );
+      wallGeometries.push(geom);
     }
   }
 
   addZoneLabel(zone, bounds) {
-    const texture = this.createTextTexture(zone.label, '#24313a', '#f5dfaa');
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 0.62), new THREE.MeshBasicMaterial({ map: texture, transparent: true }));
-    // Papan nama rebah di lantai tepi selatan zona: selalu terbaca dari kamera +x+z dan tidak tertutup dinding.
-    sign.position.set(bounds.x, 0.03, bounds.maxZ - 0.45);
-    sign.rotation.x = -Math.PI / 2;
+    const texture = this.createTextTexture(zone.label);
+    const sign = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.2, 0.95),
+      new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: false,
+        depthWrite: true,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+        polygonOffsetUnits: -2
+      })
+    );
+    // Papan nama berputar 45° di sumbu Y & miring di sumbu X agar menghadap tepat ke kamera isometrik (+x+z)
+    const [lx, lz] = ZONE_LABEL_POS[zone.id] || [bounds.x, bounds.maxZ - 1.25];
+    sign.position.set(lx, 0.12, lz);
+    sign.rotation.order = 'YXZ';
+    sign.rotation.y = Math.PI / 4;
+    sign.rotation.x = -Math.PI / 4.8;
+    sign.renderOrder = 3;
     sign.userData.zoneId = zone.id;
     this.zoneLabels.push(sign);
     this.scene.add(sign);
   }
 
-  createTextTexture(text, foreground = '#23303a', background = '#f0dfbf') {
+  createTextTexture(text) {
     const canvas = document.createElement('canvas');
-    canvas.width = 512;
-    canvas.height = 104;
+    canvas.width = 640;
+    canvas.height = 160;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = background;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#765334';
-    ctx.lineWidth = 7;
-    ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
-    ctx.fillStyle = foreground;
-    ctx.font = 'bold 34px sans-serif';
+
+    // Plakat gelap dengan border emas hangat agar kontras tinggi di semua jenis lantai
+    ctx.fillStyle = '#1e293b';
+    if (ctx.roundRect) {
+      ctx.beginPath();
+      ctx.roundRect(8, 8, canvas.width - 16, canvas.height - 16, 20);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.24)';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(16, 16, canvas.width - 32, canvas.height - 32, 14);
+      ctx.stroke();
+    } else {
+      ctx.fillRect(8, 8, canvas.width - 16, canvas.height - 16);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+    }
+
+    ctx.fillStyle = '#ffffff';
+    const fontSize = text.length > 20 ? 48 : text.length > 15 ? 54 : 64;
+    ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2 + 2);
+
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
+    texture.generateMipmaps = false;
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
     return texture;
   }
 
@@ -276,11 +353,34 @@ export class OfficeScene {
   focusZone(zoneId) {
     const target = this.zoneCenters.get(zoneId);
     if (!target) return;
-    this.focusAnimation = { started: performance.now(), duration: 420, fromTarget: this.controls.target.clone(), toTarget: target.clone(), fromCamera: this.camera.position.clone(), toCamera: target.clone().add(new THREE.Vector3(13, 16, 13)) };
+    this.currentZone = zoneId;
+    const toZoom = window.innerWidth < 520 ? 2.1 : 1.85;
+    this.focusAnimation = {
+      started: performance.now(),
+      duration: 420,
+      fromTarget: this.controls.target.clone(),
+      toTarget: target.clone(),
+      fromCamera: this.camera.position.clone(),
+      toCamera: target.clone().add(new THREE.Vector3(13, 16, 13)),
+      fromZoom: this.camera.zoom,
+      toZoom
+    };
+    if (this.onZoneChange) this.onZoneChange(zoneId);
   }
 
   showOverview() {
-    this.focusAnimation = { started: performance.now(), duration: 420, fromTarget: this.controls.target.clone(), toTarget: new THREE.Vector3(), fromCamera: this.camera.position.clone(), toCamera: new THREE.Vector3(25, 25, 25) };
+    this.currentZone = null;
+    this.focusAnimation = {
+      started: performance.now(),
+      duration: 420,
+      fromTarget: this.controls.target.clone(),
+      toTarget: new THREE.Vector3(0, 0, 0),
+      fromCamera: this.camera.position.clone(),
+      toCamera: new THREE.Vector3(25, 25, 25),
+      fromZoom: this.camera.zoom,
+      toZoom: 1.0
+    };
+    if (this.onZoneChange) this.onZoneChange(null);
   }
 
   updateFocusTween() {
@@ -290,6 +390,10 @@ export class OfficeScene {
     const eased = 1 - (1 - t) ** 3;
     this.controls.target.lerpVectors(state.fromTarget, state.toTarget, eased);
     this.camera.position.lerpVectors(state.fromCamera, state.toCamera, eased);
+    if (state.fromZoom !== undefined && state.toZoom !== undefined) {
+      this.camera.zoom = THREE.MathUtils.lerp(state.fromZoom, state.toZoom, eased);
+      this.camera.updateProjectionMatrix();
+    }
     if (t === 1) this.focusAnimation = null;
   }
 

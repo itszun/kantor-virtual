@@ -3,9 +3,9 @@
 import { spawn } from 'node:child_process';
 import { writeFileSync, readFileSync } from 'node:fs';
 const [url, out, w, h, wait] = process.argv.slice(2);
-const ch = spawn('google-chrome', ['--headless=new','--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader','--hide-scrollbars','--remote-debugging-port=0',`--window-size=${w},${h}`,'--user-data-dir=/tmp/kantor-cdp-profile-${process.pid}','about:blank'], { stdio: ['ignore','ignore','inherit'] });
+const ch = spawn('google-chrome', ['--headless=new','--no-sandbox','--enable-unsafe-swiftshader','--use-angle=swiftshader','--hide-scrollbars','--remote-debugging-port=0',`--window-size=${w},${h}`,`--user-data-dir=/tmp/kantor-cdp-profile-${process.pid}`,'about:blank'], { stdio: ['ignore','ignore','inherit'] });
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-let port; for (let i=0;i<150;i++){ try { port = readFileSync('/tmp/kantor-cdp-profile-${process.pid}/DevToolsActivePort','utf8').split('\n')[0]; if (port) break; } catch {} await sleep(200); }
+let port; for (let i=0;i<150;i++){ try { port = readFileSync(`/tmp/kantor-cdp-profile-${process.pid}/DevToolsActivePort`,'utf8').split('\n')[0]; if (port) break; } catch {} await sleep(200); }
 const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json();
 const page = targets.find(t => t.type === 'page');
 const ws = new WebSocket(page.webSocketDebuggerUrl); await new Promise(r => ws.onopen = r);

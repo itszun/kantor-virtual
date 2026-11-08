@@ -1,13 +1,17 @@
 import * as THREE from 'three';
 
 // Greybox prop factories for the v6 floorplan. All materials come from scene.js.
+const LARGE_PROP_TYPES = new Set(['sleep_pod', 'storage_shelves', 'altar', 'reception_counter', 'fridge_sink', 'executive_desk', 'meeting_table', 'pantry_counter']);
+
 export function buildV6Prop(item, materials) {
   const [w, h, d] = item.size || [1, 1, 1];
   const group = new THREE.Group();
+  const isLarge = LARGE_PROP_TYPES.has(item.type);
   const box = (width, height, depth, material, y = height / 2) => {
     const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
     mesh.position.y = y;
-    mesh.castShadow = height > 0.6;
+    // Sesuai PLAN-012: castShadow hanya untuk prop besar (≥0.7m) & karakter
+    mesh.castShadow = isLarge && height >= 0.7;
     mesh.receiveShadow = true;
     group.add(mesh);
     return mesh;
@@ -48,14 +52,12 @@ export function buildV6Prop(item, materials) {
       box(w, h * 0.6, d, wood, h * 0.3);
       const statue = new THREE.Mesh(new THREE.SphereGeometry(Math.min(w, d) * 0.22, 12, 8), accent);
       statue.position.y = h * 0.82;
-      statue.castShadow = true;
       group.add(statue);
       break;
     case 'planter':
       box(w, h * 0.55, d, materials.terracotta, h * 0.275);
       const foliage = new THREE.Mesh(new THREE.ConeGeometry(Math.min(w, d) * 0.34, h, 8), materials.leaf);
       foliage.position.y = h * 0.95;
-      foliage.castShadow = true;
       group.add(foliage);
       break;
     case 'low_fence':

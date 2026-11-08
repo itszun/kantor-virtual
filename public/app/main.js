@@ -64,6 +64,26 @@ async function startApp() {
   const canvasEl = document.getElementById('canvas-3d');
   const cssContainerEl = document.getElementById('css2d-container');
   const scene = new OfficeScene(canvasEl, cssContainerEl, office);
+  window.__scene = scene;
+
+  // Inisialisasi kontrol fokus zona UI (PLAN-012)
+  ui.initZoneControls(office.zones, (zoneId) => {
+    if (zoneId) {
+      scene.focusZone(zoneId);
+    } else {
+      scene.showOverview();
+    }
+  });
+  scene.onZoneChange = (zoneId) => {
+    ui.setActiveZone(zoneId);
+  };
+  const targetZoneParam = urlParams.get('zone');
+  if (targetZoneParam) {
+    setTimeout(() => {
+      scene.focusZone(targetZoneParam);
+      ui.setActiveZone(targetZoneParam);
+    }, 300);
+  }
 
   // 5. Inisialisasi Karakter Persona dengan Spawn Spot Awal:
   // Pada mode demo: Alex di meja kerja, yang lain di zona santai v6.
