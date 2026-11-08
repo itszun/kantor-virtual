@@ -1,4 +1,4 @@
-/* CSS untuk Kantor Weiwu - 3D Virtual Office (Tema Terang & Hangat) */
+/* CSS untuk Kantor Weiwu - 3D Virtual Office & PWA Mobile */
 :root {
   --bg-color: #f7f4ee;
   --bg-color-alt: #fdfbf7;
@@ -9,6 +9,10 @@
   --text-main: #1e293b;
   --text-muted: #64748b;
   --text-dim: #94a3b8;
+  --brand-primary: #2b1d14;
+  --brand-accent: #f2a541;
+  --brand-accent-hover: #e09432;
+  --brand-amber-dark: #b45309;
   --color-green: #10b981;
   --color-green-glow: rgba(16, 185, 129, 0.2);
   --color-purple: #6d4fd8;
@@ -51,16 +55,17 @@ body {
 
 /* Header */
 .app-header {
-  padding: 12px 16px;
+  padding: 10px 18px;
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 25;
   box-shadow: var(--shadow-sm);
 }
 
@@ -71,20 +76,20 @@ body {
 }
 
 .brand-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 6px;
   letter-spacing: -0.01em;
-  color: var(--text-main);
+  color: var(--brand-primary);
 }
 
 .brand-badge {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--color-purple);
-  background: rgba(109, 79, 216, 0.1);
+  color: var(--brand-amber-dark);
+  background: rgba(242, 165, 65, 0.15);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -98,7 +103,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   background: #ecfdf5;
   color: #059669;
@@ -121,8 +126,8 @@ body {
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: 7.5px;
+  height: 7.5px;
   border-radius: 50%;
   background: var(--color-green);
   box-shadow: 0 0 6px var(--color-green);
@@ -135,22 +140,14 @@ body {
   100% { transform: scale(0.9); opacity: 0.8; }
 }
 
-/* Stats Row (4 Kolom di Desktop, 2x2 di Layar < 520px) */
+/* Stats Row Desktop (4 Kolom) */
 .stats-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  padding: 10px 16px;
+  padding: 8px 16px;
   background: var(--bg-color);
   border-bottom: 1px solid var(--border-color);
-}
-
-@media (max-width: 520px) {
-  .stats-strip {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    padding: 8px 12px;
-  }
 }
 
 .stat-cell {
@@ -188,6 +185,16 @@ body {
   margin-top: 1px;
 }
 
+.stat-cell-clickable {
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.stat-cell-clickable:hover {
+  border-color: var(--brand-accent);
+  background: var(--surface-card-hover);
+}
+
 /* 3D Viewport */
 .viewport-container {
   position: relative;
@@ -215,18 +222,53 @@ body {
   overflow: hidden;
 }
 
+/* Slot kosong untuk chip zona Alex PLAN-012 */
+#zone-chips-slot {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 15;
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+/* Hint kontrol 3D */
 .viewport-controls-hint {
   position: absolute;
   bottom: 8px;
   right: 12px;
   font-size: 10px;
   color: #64748b;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   border: 1px solid var(--border-color);
-  padding: 2px 8px;
-  border-radius: 10px;
+  padding: 3px 8px;
+  border-radius: 12px;
   pointer-events: none;
   box-shadow: var(--shadow-sm);
+  z-index: 12;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.viewport-controls-hint.dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hint-mobile {
+  display: none;
+}
+
+.hint-desktop {
+  display: inline;
+}
+
+/* Strip avatar persona kecil mengambang di bawah kanvas kantor 3D */
+.floating-avatar-strip {
+  display: none;
 }
 
 /* Fallback bila WebGL tak ada */
@@ -316,7 +358,7 @@ body {
   transform: translate(-50%, calc(-100% - 24px));
 }
 
-/* Panel Konten */
+/* Panel Konten Desktop */
 .panel-section {
   flex: 1;
   display: flex;
@@ -325,7 +367,7 @@ body {
   gap: 16px;
 }
 
-/* Horizontal Persona Cards */
+/* Persona Cards Scroll / Grid */
 .persona-cards-scroll {
   display: flex;
   gap: 10px;
@@ -353,11 +395,13 @@ body {
   gap: 8px;
   box-shadow: var(--shadow-sm);
   transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .persona-card:hover {
   background: var(--surface-card-hover);
   box-shadow: var(--shadow-md);
+  border-color: var(--brand-accent);
 }
 
 .persona-card-header {
@@ -443,7 +487,7 @@ body {
   justify-content: space-between;
 }
 
-/* Tab Navigasi */
+/* Tab Navigasi Konten */
 .tabs-container {
   display: flex;
   flex-direction: column;
@@ -480,9 +524,9 @@ body {
 }
 
 .tab-btn.active {
-  color: var(--color-purple);
+  color: var(--brand-amber-dark);
   background: var(--surface-card);
-  border-bottom: 2px solid var(--color-purple);
+  border-bottom: 2px solid var(--brand-accent);
 }
 
 .tab-content {
@@ -569,64 +613,809 @@ body {
   font-style: italic;
 }
 
-/* Desktop Layout (lebar > 960px) */
-@media (min-width: 960px) {
+/* Bottom Tab Bar (Default disembunyikan di desktop) */
+.bottom-tab-bar {
+  display: none;
+}
+
+/* Bottom Sheet & Backdrop (Default disembunyikan) */
+.sheet-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 29, 20, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 80;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.sheet-backdrop.open {
+  display: block;
+  opacity: 1;
+}
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface-card);
+  border-top: 1px solid var(--border-color);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -8px 32px rgba(43, 29, 20, 0.16);
+  z-index: 90;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 8px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+.sheet-handle-bar {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 10px;
+  cursor: grab;
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4.5px;
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.sheet-avatar-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheet-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  background: var(--color-purple);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.sheet-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.sheet-role {
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+.sheet-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sheet-status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.sheet-status-badge.working {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.sheet-status-badge.idle {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.sheet-close-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheet-close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+}
+
+.sheet-body {
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sheet-section {
+  background: #f8fafc;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+.sheet-section-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.sheet-task-text {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #1d4ed8;
+  line-height: 1.35;
+}
+
+.sheet-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.sheet-detail-item {
+  background: var(--surface-card);
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sheet-detail-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.sheet-detail-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.sheet-actions {
+  margin-top: 4px;
+}
+
+.sheet-action-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-primary);
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s ease;
+}
+
+.sheet-action-btn:hover {
+  background: #412c1e;
+}
+
+.sheet-action-btn:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================================================
+   Desktop Layout (lebar >= 900px)
+   ========================================================================== */
+@media (min-width: 900px) {
   .app-container {
-    padding: 16px 24px;
+    padding: 14px 20px;
     height: 100vh;
   }
 
   .main-split-layout {
-    display: grid;
-    grid-template-columns: 1fr 420px;
-    gap: 20px;
+    display: grid !important;
+    grid-template-columns: 1fr 420px !important;
+    gap: 16px;
     flex: 1;
     overflow: hidden;
-    margin-top: 14px;
+    margin-top: 12px;
   }
 
   .viewport-container {
-    height: 100%;
-    min-height: 500px;
+    display: block !important;
+    height: 100% !important;
+    min-height: 480px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
   }
 
   .panel-section {
-    padding: 0;
-    overflow-y: auto;
+    display: flex !important;
+    padding: 0 !important;
+    overflow-y: auto !important;
     max-height: 100%;
   }
 
   .stats-strip {
     border-radius: var(--radius-md);
-    margin-top: 12px;
+    margin-top: 10px;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
   }
 
   .persona-cards-scroll {
-    display: grid;
+    display: grid !important;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    overflow-x: visible;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
   }
 
   .persona-card {
     flex: auto;
   }
+
+  .tabs-container {
+    display: flex !important;
+  }
+
+  .tabs-nav {
+    display: flex !important;
+  }
+
+  .tab-btn {
+    display: block !important;
+  }
+
+  .bottom-tab-bar {
+    display: none !important;
+  }
+
+  .floating-avatar-strip {
+    display: none !important;
+  }
+
+  .hint-mobile {
+    display: none !important;
+  }
+
+  .hint-desktop {
+    display: inline !important;
+  }
 }
 
-/* PWA Safe Area Support (iPhone notch & home indicator) */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .app-header {
-    padding-top: max(12px, env(safe-area-inset-top));
-    padding-left: max(16px, env(safe-area-inset-left));
-    padding-right: max(16px, env(safe-area-inset-right));
+/* ==========================================================================
+   Mobile PWA Layout (lebar < 900px)
+   ========================================================================== */
+@media (max-width: 899px) {
+  html, body {
+    height: 100dvh;
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
+
   .app-container {
-    padding-bottom: env(safe-area-inset-bottom);
+    height: 100dvh;
+    height: 100vh;
+    max-height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+
+  /* 1. App bar compact (±48 px + safe-area-inset-top) */
+  .app-header {
+    height: calc(48px + env(safe-area-inset-top, 0px));
+    min-height: calc(48px + env(safe-area-inset-top, 0px));
+    max-height: calc(48px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: 0;
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .brand-wrapper {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .brand-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+  }
+
+  .brand-subtitle {
+    display: none !important;
+  }
+
+  .header-live-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  /* 2. Statistik menjadi satu baris chip ringkas (Tinggi <= 44 px, scroll horizontal) */
+  .stats-strip {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    padding: 0 12px;
+    background: var(--bg-color-alt);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+  }
+
+  .stats-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stat-cell {
+    flex: 0 0 auto;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 10px;
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .stat-cell-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .stat-cell-label::after {
+    content: ":";
+  }
+
+  .stat-cell-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 0;
+  }
+
+  .stat-cell-sub {
+    display: none !important;
+  }
+
+  .stat-cell-clickable {
+    border-color: rgba(242, 165, 65, 0.5);
+    background: #fffdf9;
+  }
+
+  .stat-cell-clickable:active {
+    background: #fef3c7;
+  }
+
+  /* 3. Main container & Bottom Tab Bar layout */
+  .main-split-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* 3. Bottom Tab Bar iOS-like (tetap di bawah, env(safe-area-inset-bottom), sentuh >= 44 px) */
+  .bottom-tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(52px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-color);
+    z-index: 50;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .bottom-tab-btn {
+    flex: 1;
+    height: 100%;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.15s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+    padding: 4px 0;
+  }
+
+  .bottom-tab-btn:active {
+    transform: scale(0.92);
+  }
+
+  .bottom-tab-btn.active {
+    color: var(--brand-amber-dark);
+  }
+
+  .bottom-tab-icon {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+  }
+
+  .bottom-tab-btn.active .bottom-tab-icon {
+    stroke-width: 2.3;
+  }
+
+  .bottom-tab-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* 4. Tampilan KANTOR (3D diorama mengisi penuh sisa layar) */
+  body[data-view="kantor"] .viewport-container {
+    display: block;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 0;
+  }
+
+  body[data-view="kantor"] .panel-section {
+    display: none !important;
+  }
+
+  /* Strip avatar persona mengambang semi-transparan di bagian bawah kanvas kantor */
+  .floating-avatar-strip {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(229, 224, 213, 0.85);
+    border-radius: 28px;
+    padding: 4px 8px;
+    z-index: 15;
+    box-shadow: 0 4px 16px rgba(43, 29, 20, 0.12);
+    max-width: calc(100% - 24px);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .floating-avatar-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .floating-avatar-btn {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    min-height: 44px; /* Target sentuh >= 44 px */
+    min-width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .floating-avatar-btn:active {
+    transform: scale(0.9);
+  }
+
+  .floating-avatar-btn::before {
+    content: attr(data-initial);
+  }
+
+  .floating-avatar-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  .floating-avatar-dot {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 8.5px;
+    height: 8.5px;
+    border-radius: 50%;
+    border: 1.5px solid #ffffff;
+    background: #94a3b8;
+  }
+
+  .floating-avatar-dot.working {
+    background: var(--color-green);
+    box-shadow: 0 0 4px var(--color-green);
+  }
+
+  .hint-mobile {
+    display: inline;
+  }
+
+  .hint-desktop {
+    display: none;
+  }
+
+  /* Tampilan non-kantor (Tim, Aktivitas, Token) */
+  body:not([data-view="kantor"]) .viewport-container {
+    display: none !important;
+  }
+
+  body:not([data-view="kantor"]) .panel-section {
+    display: flex !important;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  /* 5. Tampilan TIM: kartu persona compact satu kolom (1 baris status + 1 baris tugas) */
+  body[data-view="tim"] #persona-cards-container {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    overflow-x: visible;
+    overflow-y: visible;
+    padding-bottom: 8px;
+  }
+
+  body[data-view="tim"] .persona-card {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 10px 12px;
+    gap: 6px;
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+  }
+
+  body[data-view="tim"] .persona-card-header {
+    margin-bottom: 2px;
+  }
+
+  body[data-view="tim"] .persona-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  body[data-view="tim"] .persona-card-name {
+    font-size: 13px;
+  }
+
+  body[data-view="tim"] .persona-card-role {
+    font-size: 10px;
+  }
+
+  body[data-view="tim"] .persona-card-activity {
+    min-height: unset;
+    line-height: 1.3;
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  body[data-view="tim"] .persona-card-footer {
+    padding-top: 4px;
+    font-size: 10px;
+    border-top: 1px solid var(--border-color-light);
+  }
+
+  body[data-view="tim"] #main-tabs-container {
+    display: none !important;
+  }
+
+  /* 6. Tampilan AKTIVITAS: segmented nav Riwayat / Tugas Greg / Aktivitas */
+  body[data-view="aktivitas"] #persona-cards-container {
+    display: none !important;
+  }
+
+  body[data-view="aktivitas"] #main-tabs-container {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  body[data-view="aktivitas"] #desktop-tabs-nav {
+    display: flex;
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+    margin-bottom: 12px;
+    gap: 2px;
+  }
+
+  body[data-view="aktivitas"] .tab-btn {
+    border-radius: 6px;
+    border-bottom: none;
+    padding: 7px 4px;
+    font-size: 11.5px;
+  }
+
+  body[data-view="aktivitas"] .tab-btn.active {
+    background: #fef3c7;
+    color: var(--brand-amber-dark);
+    border-bottom: none;
+  }
+
+  body[data-view="aktivitas"] .tab-btn[data-tab="tab-tokens"],
+  body[data-view="aktivitas"] .tab-btn[data-tab="tab-director"] {
+    display: none !important;
+  }
+
+  body[data-view="aktivitas"] .tab-content {
+    padding: 0;
+    background: transparent;
+  }
+
+  /* 7. Tampilan TOKEN: Token + Director stacked */
+  body[data-view="token"] #persona-cards-container {
+    display: none !important;
+  }
+
+  body[data-view="token"] #main-tabs-container {
+    display: flex !important;
+    flex-direction: column;
+    width: 100%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    gap: 14px;
+  }
+
+  body[data-view="token"] #desktop-tabs-nav {
+    display: none !important;
+  }
+
+  body[data-view="token"] .tab-content {
+    padding: 0;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  body[data-view="token"] #tab-tokens {
+    display: block !important;
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  body[data-view="token"] #tab-director {
+    display: block !important;
+    background: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    box-shadow: var(--shadow-sm);
   }
 }
 
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

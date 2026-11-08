@@ -7,6 +7,7 @@ import { IdleManager } from './idle.js';
 import { DirectorClient } from './director-client.js';
 import { UIManager } from './ui.js';
 import { gregTasks } from './mappers.js';
+import * as shell from './shell.js';
 
 function isWebGLAvailable() {
   try {
@@ -59,11 +60,13 @@ async function startApp() {
 
   const { office, idle_lines, personas } = configData;
   ui.setPersonaConfig(personas);
+  ui.setOfficeConfig(office);
 
   // 4. Inisialisasi Three.js Scene & CSS2D Container
   const canvasEl = document.getElementById('canvas-3d');
   const cssContainerEl = document.getElementById('css2d-container');
   const scene = new OfficeScene(canvasEl, cssContainerEl, office);
+  window.kantorScene = scene;
 
   // 5. Inisialisasi Karakter Persona dengan Spawn Spot Awal:
   // Pada mode demo: Alex di meja kerja, yang lain di zona santai v6.
@@ -92,6 +95,10 @@ async function startApp() {
     const char = new Character(p, office, scene.scene, startSpot);
     charactersMap.set(p.id, char);
   });
+
+  // Inisialisasi Mobile PWA Shell (Hash router, avatar strip, bottom sheet)
+  shell.initShell({ officeConfig: office, personas });
+  shell.setCharactersMap(charactersMap);
 
   // 6. Inisialisasi Idle Manager & Director Client
   const idleManager = new IdleManager(charactersMap, office, idle_lines);
@@ -162,6 +169,7 @@ async function startApp() {
 
     ui.updateSnapshot(demoSnapshot, charactersMap);
     directorClient.applyState(demoSnapshot);
+    shell.updateAvatarStrip(demoSnapshot.personas, charactersMap, office);
 
     // Tab Riwayat contoh
     ui.updateHistory([
@@ -220,6 +228,7 @@ async function startApp() {
 
       directorClient.applyState(demoSnapshot);
       ui.updateSnapshot(demoSnapshot, charactersMap);
+      shell.updateAvatarStrip(demoSnapshot.personas, charactersMap, office);
       updateDebugDom();
     }, 25000);
   } else {
@@ -319,6 +328,7 @@ async function startApp() {
         if (initialSnapshot.personas) latestPersonas = initialSnapshot.personas;
         directorClient.applyState(initialSnapshot);
         ui.updateSnapshot(initialSnapshot, charactersMap);
+        shell.updateAvatarStrip(initialSnapshot.personas, charactersMap, office);
       }
     } catch (err) {
       console.warn('Gagal memuat /api/state:', err);
@@ -351,6 +361,7 @@ async function startApp() {
           if (snapshot.personas) latestPersonas = snapshot.personas;
           directorClient.applyState(snapshot);
           ui.updateSnapshot(snapshot, charactersMap);
+          shell.updateAvatarStrip(snapshot.personas, charactersMap, office);
           updateDebugDom();
 
           // Debounce reload history (2s) dan usage (30s)
@@ -366,6 +377,7 @@ async function startApp() {
   // Update berkala nama spot persona di kartu UI (teks kartu update setelah tiba)
   setInterval(() => {
     ui.updateSnapshot(null, charactersMap);
+    shell.updateAvatarStrip(null, charactersMap, office);
     updateDebugDom();
   }, 1000);
 
