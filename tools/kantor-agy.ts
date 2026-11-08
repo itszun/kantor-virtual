@@ -188,6 +188,8 @@ async function main() {
 
   const agyBin = process.env.KANTOR_AGY_BIN || 'agy';
 
+  // Tandai proses anak agar hook native tidak mencatat tugas ganda.
+  process.env.KANTOR_WRAPPED = '1';
   const child = spawn(agyBin, finalAgyArgs, {
     stdio: ['inherit', 'pipe', 'inherit'],
   });

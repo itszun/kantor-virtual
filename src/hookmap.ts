@@ -75,3 +75,69 @@ export function mapHook(input: unknown): KantorEvent | null {
 
   return null;
 }
+
+export type HookAgent = 'claude' | 'codex' | 'agy';
+
+function compactTitle(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const compacted = value.trim().replace(/\s+/g, ' ').slice(0, 120);
+  return compacted || undefined;
+}
+
+/**
+ * Hook native Codex CLI (format mirip Claude: hook_event_name, session_id, prompt).
+ * Satu giliran prompt = satu tugas persona `codex`.
+ */
+export function mapCodexHook(input: unknown): KantorEvent | null {
+  if (typeof input !== 'object' || input === null) return null;
+  const raw = input as Record<string, unknown>;
+  const eventName = typeof raw.hook_event_name === 'string' ? raw.hook_event_name : '';
+  const sessionId = typeof raw.session_id === 'string' ? raw.session_id : '';
+  if (!sessionId) return null;
+  const taskId = `codex-${sessionId}`;
+
+  if (eventName === 'UserPromptSubmit') {
+    const title = compactTitle(raw.prompt);
+    return {
+      source: 'codex-hook',
+      persona: 'codex',
+      type: 'task.start',
+      task_id: taskId,
+      ...(title !== undefined ? { title } : {}),
+    };
+  }
+  if (eventName === 'Stop') {
+    return { source: 'codex-hook', persona: 'codex', type: 'task.end', task_id: taskId };
+  }
+  return null;
+}
+
+/**
+ * Hook native agy (payload camelCase tanpa nama event; nama event dari argumen CLI).
+ * PreInvocation pertama (invocationNum 0) = mulai, Stop yang fullyIdle = selesai. Persona `alex`.
+ */
+export function mapAgyHook(eventName: string, input: unknown): KantorEvent | null {
+  if (typeof input !== 'object' || input === null) return null;
+  const raw = input as Record<string, unknown>;
+  const conversationId = typeof raw.conversationId === 'string' ? raw.conversationId : '';
+  if (!conversationId) return null;
+  const taskId = `agy-${conversationId}`;
+
+  if (eventName === 'PreInvocation') {
+    const num = typeof raw.invocationNum === 'number' ? raw.invocationNum : 0;
+    if (num !== 0) return null;
+    const title = compactTitle(raw.lastUserInput);
+    return {
+      source: 'agy-hook',
+      persona: 'alex',
+      type: 'task.start',
+      task_id: taskId,
+      ...(title !== undefined ? { title } : {}),
+    };
+  }
+  if (eventName === 'Stop') {
+    if (raw.fullyIdle === false) return null;
+    return { source: 'agy-hook', persona: 'alex', type: 'task.end', task_id: taskId };
+  }
+  return null;
+}

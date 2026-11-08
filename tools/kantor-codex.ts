@@ -136,6 +136,8 @@ async function main() {
 
   try {
     exitCode = await new Promise<number>((resolve, reject) => {
+      // Tandai proses anak agar hook native tidak mencatat tugas ganda.
+      process.env.KANTOR_WRAPPED = '1';
       const child = spawn(binPath, codexArgs, {
         stdio: ['inherit', 'pipe', 'pipe'],
       });

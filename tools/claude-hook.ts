@@ -1,7 +1,21 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { mapHook } from '../src/hookmap.ts';
+import { mapHook, mapCodexHook, mapAgyHook } from '../src/hookmap.ts';
+
+// Pemakaian: claude-hook.sh                      (hook Claude Code, default)
+//            claude-hook.sh --agent codex        (hook native Codex CLI)
+//            claude-hook.sh --agent agy --event PreInvocation|Stop  (hook native agy)
+// Tugas yang dijalankan lewat tools/kantor-{agy,codex}.sh membawa KANTOR_WRAPPED=1;
+// hook codex/agy dilewati agar tidak tercatat ganda.
+function argValue(name: string): string {
+  const i = process.argv.indexOf(name);
+  return i >= 0 && i + 1 < process.argv.length ? process.argv[i + 1] : '';
+}
+const AGENT = argValue('--agent') || 'claude';
+const AGY_EVENT = argValue('--event');
+// agy mengharapkan objek JSON di stdout.
+if (AGENT === 'agy') process.stdout.write('{}\n');
 
 function resolveHomePath(filePath: string): string {
   if (filePath.startsWith('~/') || filePath === '~') {
@@ -29,7 +43,13 @@ async function main() {
       process.exit(0);
     }
 
-    const event = mapHook(parsed);
+    if (AGENT !== 'claude' && process.env.KANTOR_WRAPPED === '1') {
+      process.exit(0);
+    }
+    const event =
+      AGENT === 'codex' ? mapCodexHook(parsed)
+      : AGENT === 'agy' ? mapAgyHook(AGY_EVENT, parsed)
+      : mapHook(parsed);
     if (!event) {
       process.exit(0);
     }
