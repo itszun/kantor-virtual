@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from '../src/server.ts';
 
-const PORT = 8830;
+const PORT = 8840;
 
 test('Endpoint /api/office dan vendor /vendor/three/*', async (t) => {
   const server = createServer({
