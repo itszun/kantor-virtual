@@ -3,3 +3,9 @@ data/
 *.db
 .env
 secrets/
+
+# Duplikat identik dari public/v4/ (hasil agy di root); sumber resmi ada di public/v4/
+/app.js
+/index.html
+/styles.css
+/floor_plan_v4_feng_shui_1794146333890.jpg

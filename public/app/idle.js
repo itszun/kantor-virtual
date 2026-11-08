@@ -22,6 +22,14 @@ export class IdleManager {
       { spot: 'window_1', weight: 2 },
       { spot: 'window_2', weight: 2 },
       { spot: 'whiteboard', weight: 1.5 },
+      { spot: 'ps5_sofa_1', weight: 3.5 },
+      { spot: 'ps5_sofa_2', weight: 3.0 },
+      { spot: 'meditation_1', weight: 2.5 },
+      { spot: 'meditation_2', weight: 2.5 },
+      { spot: 'sunken_tatami_1', weight: 3.0 },
+      { spot: 'sunken_tatami_2', weight: 3.0 },
+      { spot: 'reception_desk', weight: 1.5 },
+      { spot: 'storage_rack', weight: 1.5 },
     ];
 
     // Status spot yang sedang diduduki: spotName -> personaId
@@ -41,6 +49,8 @@ export class IdleManager {
       betty: 'tv',
       windry: 'coffee',
       alex: 'lounge_2',
+      codex: 'ps5_sofa_1',
+      hermes: 'lounge_3',
     };
 
     // Stagger timer awal agar karakter tidak bergerak serempak di detik 0
@@ -49,6 +59,8 @@ export class IdleManager {
       betty: 16,
       windry: 22,
       alex: 14,
+      codex: 18,
+      hermes: 20,
     };
 
     for (const [id, char] of this.characters.entries()) {

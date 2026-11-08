@@ -1,0 +1,27 @@
+
+# --- Kantor Weiwu (kantor.weiwu.my.id) ---
+# /  dan /landing/*  : publik (landing page)
+# /office            : kantor 3D, pakai login yang sama dengan ea.weiwu.my.id
+# /api/events        : hanya internal (hook lokal langsung ke 127.0.0.1:8790)
+kantor.weiwu.my.id {
+	handle /api/events* {
+		respond 403
+	}
+
+	@public path / /landing/*
+	handle @public {
+		rewrite / /landing/
+		reverse_proxy 127.0.0.1:8790
+	}
+
+	handle {
+		basicauth {
+__BASICAUTH_LINE__
+		}
+		@office path /office /office/
+		rewrite @office /index.html
+		reverse_proxy 127.0.0.1:8790 {
+			flush_interval -1
+		}
+	}
+}

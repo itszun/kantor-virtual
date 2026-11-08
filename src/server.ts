@@ -10,6 +10,8 @@ import { getSnapshot, sweepStale, getRecentTasks } from './state.ts';
 import { getUsageReport } from './usage.ts';
 import { scanOnce } from './scanner.ts';
 import { loadPricing } from './pricing.ts';
+import { getRamMetrics } from './metrics.ts';
+import { getDirectorStatsToday, getRecentMemories } from './director.ts';
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -149,6 +151,28 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
       const report = getUsageReport(db, config.personas, days);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(report));
+      return;
+    }
+
+    // 3c. GET /api/system (Telemetri RAM server asli & kapasitas boks Storage Room v0.2)
+    if (pathname === '/api/system' && method === 'GET') {
+      const metrics = getRamMetrics();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(metrics));
+      return;
+    }
+
+    // 3d. GET /api/director (Status & memori santai Director v0.1 §7)
+    if (pathname === '/api/director' && method === 'GET') {
+      const stats = getDirectorStatsToday(db);
+      const memories = getRecentMemories(db, 10);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        enabled: config.director.enabled,
+        model: config.director.model,
+        stats,
+        recent_memories: memories,
+      }));
       return;
     }
 

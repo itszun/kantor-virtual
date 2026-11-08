@@ -12,6 +12,8 @@ export class OfficeScene {
     this.config = officeConfig || {};
     this.monitorsByDesk = new Map(); // desk_id -> array of { screenMat, glowBarMat }
     this.whiteboards = new Map(); // id -> { boardMat, title, texture }
+    this.storageBoxesInstanced = null;
+    this.storageRackGroup = null;
 
     this.init();
   }
@@ -334,6 +336,187 @@ export class OfficeScene {
     ctx.fillStyle = '#ffffff';
     ctx.font = '14px sans-serif';
     ctx.fillText('Tim AI Beroperasi Penuh · Sprint Status: Normal · Efisiensi 99.4%', 20, 272);
+
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  createTatamiTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    // Warna dasar tikar jerami tatami Jepang
+    ctx.fillStyle = '#b8a66d';
+    ctx.fillRect(0, 0, 512, 512);
+
+    // Anyaman jerami halus melintang
+    ctx.fillStyle = 'rgba(74, 62, 34, 0.12)';
+    for (let y = 0; y < 512; y += 4) {
+      ctx.fillRect(0, y, 512, 2);
+    }
+    // Jahitan serat vertikal
+    ctx.fillStyle = 'rgba(235, 222, 175, 0.18)';
+    for (let x = 0; x < 512; x += 16) {
+      ctx.fillRect(x, 0, 2, 512);
+    }
+    // Pita tepi kain hitam/hijau lumut tua (heri) di sisi kiri & kanan
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(0, 0, 28, 512);
+    ctx.fillRect(512 - 28, 0, 28, 512);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(26, 0, 3, 512);
+    ctx.fillRect(512 - 29, 0, 3, 512);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
+    return texture;
+  }
+
+  createCardboardTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    // Kertas kardus kraft cokelat hangat
+    ctx.fillStyle = '#be854d';
+    ctx.fillRect(0, 0, 256, 256);
+
+    // Serat kardus kasar
+    ctx.fillStyle = 'rgba(92, 53, 20, 0.1)';
+    for (let y = 0; y < 256; y += 6) {
+      ctx.fillRect(0, y, 256, 2);
+    }
+
+    // Label pengiriman putih & barcode
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(25, 40, 110, 80);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('RAM LOGISTICS', 30, 58);
+    ctx.font = '10px monospace';
+    ctx.fillText('BOX-RAM', 30, 74);
+
+    // Garis barcode
+    for (let x = 32; x < 125; x += 5) {
+      const w = x % 3 === 0 ? 3 : 1.5;
+      ctx.fillRect(x, 82, w, 28);
+    }
+
+    // Pita selotip lakban cokelat di tengah
+    ctx.fillStyle = 'rgba(194, 137, 72, 0.85)';
+    ctx.fillRect(0, 140, 256, 32);
+    ctx.strokeStyle = '#8a531e';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, 140, 256, 32);
+
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  createPs5ScreenTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 512;
+    canvas.height = 288;
+    const ctx = canvas.getContext('2d');
+    // Langit pixel art game retro Kairosoft
+    const grad = ctx.createLinearGradient(0, 0, 0, 288);
+    grad.addColorStop(0, '#1e1b4b');
+    grad.addColorStop(0.5, '#4338ca');
+    grad.addColorStop(1, '#f43f5e');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 512, 288);
+
+    // Bulan pixel bulat
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(420, 70, 36, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Siluet bukit & pohon pixel
+    ctx.fillStyle = '#064e3b';
+    ctx.beginPath();
+    ctx.moveTo(0, 288);
+    ctx.lineTo(0, 200);
+    ctx.lineTo(140, 160);
+    ctx.lineTo(280, 220);
+    ctx.lineTo(420, 170);
+    ctx.lineTo(512, 210);
+    ctx.lineTo(512, 288);
+    ctx.closePath();
+    ctx.fill();
+
+    // UI HUD Game: Health bar & Koin
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(20, 20, 120, 14);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(20, 20, 120, 14);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('STAGE 1: KANTOR AI', 20, 54);
+    ctx.fillStyle = '#fde047';
+    ctx.fillText('🪙 9,999 PTS', 380, 34);
+
+    return new THREE.CanvasTexture(canvas);
+  }
+
+  createPaintingTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 384;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    // Lukisan kanvas hasil kreasi artist agy: Sunset gunung Fuji & sakura
+    const grad = ctx.createLinearGradient(0, 0, 0, 256);
+    grad.addColorStop(0, '#f97316');
+    grad.addColorStop(0.4, '#fbbf24');
+    grad.addColorStop(0.8, '#ec4899');
+    grad.addColorStop(1, '#831843');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 384, 256);
+
+    // Matahari merah bulat
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+    ctx.beginPath();
+    ctx.arc(192, 100, 50, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Gunung bersalju di tengah
+    ctx.fillStyle = '#312e81';
+    ctx.beginPath();
+    ctx.moveTo(100, 256);
+    ctx.lineTo(192, 90);
+    ctx.lineTo(284, 256);
+    ctx.closePath();
+    ctx.fill();
+
+    // Puncak salju putih
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(172, 125);
+    ctx.lineTo(192, 90);
+    ctx.lineTo(212, 125);
+    ctx.lineTo(192, 138);
+    ctx.closePath();
+    ctx.fill();
+
+    // Pohon sakura berbunga pink di sudut kiri
+    ctx.fillStyle = '#451a03';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(40, 256);
+    ctx.quadraticCurveTo(60, 180, 90, 140);
+    ctx.stroke();
+
+    ctx.fillStyle = '#f472b6';
+    for (let i = 0; i < 18; i++) {
+      const px = 60 + Math.sin(i * 1.7) * 35;
+      const py = 120 + Math.cos(i * 2.1) * 30;
+      ctx.beginPath();
+      ctx.arc(px, py, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
     return new THREE.CanvasTexture(canvas);
   }
@@ -726,6 +909,559 @@ export class OfficeScene {
         group.position.set(pos[0], 0, pos[2]);
         this.scene.add(group);
       }
+
+      else if (f.type === 'buddha_altar') {
+        const group = new THREE.Group();
+        const altarWoodMat = new THREE.MeshStandardMaterial({ color: 0x3e1f0e, roughness: 0.5 });
+        const goldMat = new THREE.MeshStandardMaterial({
+          color: 0xf59e0b,
+          metalness: 0.85,
+          roughness: 0.25,
+        });
+        const bronzeMat = new THREE.MeshStandardMaterial({
+          color: 0x78350f,
+          metalness: 0.7,
+          roughness: 0.4,
+        });
+
+        // Meja altar kayu jati bertingkat
+        const baseTable = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.65, 0.9), altarWoodMat);
+        baseTable.position.y = 0.325;
+        baseTable.castShadow = true;
+        baseTable.receiveShadow = true;
+        group.add(baseTable);
+
+        const topPlinth = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.08, 0.98), altarWoodMat);
+        topPlinth.position.y = 0.69;
+        group.add(topPlinth);
+
+        // Taplak sutra altar merah anggur
+        const runnerMat = new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.7 });
+        const runner = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.015, 0.92), runnerMat);
+        runner.position.y = 0.735;
+        group.add(runner);
+
+        // Patung Rupang Buddha Emas (Lotus seat, body, head, halo/ushnisha)
+        const statueGroup = new THREE.Group();
+        statueGroup.position.set(0, 0.74, -0.15);
+
+        // Kelopak teratai lotus base
+        const lotusBase = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.12, 16), goldMat);
+        lotusBase.position.y = 0.06;
+        statueGroup.add(lotusBase);
+
+        // Tubuh meditasi lotus posture
+        const buddhaBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.18, 0.22, 8, 16), goldMat);
+        buddhaBody.position.y = 0.28;
+        statueGroup.add(buddhaBody);
+
+        // Kepala & Ushnisha
+        const buddhaHead = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 16), goldMat);
+        buddhaHead.position.y = 0.52;
+        statueGroup.add(buddhaHead);
+
+        const ushnisha = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.1, 12), goldMat);
+        ushnisha.position.y = 0.68;
+        statueGroup.add(ushnisha);
+
+        // Lingkaran aura halo hening emas di belakang patung
+        const haloMat = new THREE.MeshStandardMaterial({
+          color: 0xfef08a,
+          emissive: 0xf59e0b,
+          emissiveIntensity: 0.4,
+          roughness: 0.3,
+        });
+        const halo = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.02, 8, 24), haloMat);
+        halo.position.set(0, 0.48, -0.06);
+        statueGroup.add(halo);
+
+        group.add(statueGroup);
+
+        // Wadah dupa perunggu & stik dupa
+        const censer = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.09, 12), bronzeMat);
+        censer.position.set(0, 0.78, 0.24);
+        group.add(censer);
+
+        const incenseStickMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+        const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.18, 6), incenseStickMat);
+        stick.position.set(0, 0.90, 0.24);
+        group.add(stick);
+
+        // Asap dupa meliuk (semi-transparan halus)
+        const smokeMat = new THREE.MeshBasicMaterial({
+          color: 0xf1f5f9,
+          transparent: true,
+          opacity: 0.3,
+        });
+        const smoke1 = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), smokeMat);
+        smoke1.position.set(0.01, 1.03, 0.24);
+        group.add(smoke1);
+        const smoke2 = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), smokeMat);
+        smoke2.position.set(-0.02, 1.12, 0.25);
+        group.add(smoke2);
+        const smoke3 = new THREE.Mesh(new THREE.SphereGeometry(0.065, 8, 8), smokeMat);
+        smoke3.position.set(0.02, 1.22, 0.26);
+        group.add(smoke3);
+
+        // Mangkuk persembahan buah & lilin teratai
+        const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.05, 0.06, 12), goldMat);
+        bowl.position.set(0.42, 0.77, 0.2);
+        group.add(bowl);
+        const candleMat = new THREE.MeshStandardMaterial({
+          color: 0xfef08a,
+          emissive: 0xf59e0b,
+          emissiveIntensity: 1.2,
+        });
+        const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.08, 12), candleMat);
+        candle.position.set(-0.42, 0.78, 0.2);
+        group.add(candle);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'meditation_cushion') {
+        const group = new THREE.Group();
+        const cushionMat = new THREE.MeshStandardMaterial({
+          color: 0x78350f,
+          roughness: 0.8,
+        });
+        const zafu = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.38, 0.11, 16), cushionMat);
+        zafu.position.y = 0.055;
+        zafu.castShadow = true;
+        group.add(zafu);
+
+        // Pita ornamen tengah
+        const ribMat = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 });
+        const rib = new THREE.Mesh(new THREE.TorusGeometry(0.36, 0.015, 8, 20), ribMat);
+        rib.rotation.x = Math.PI / 2;
+        rib.position.y = 0.055;
+        group.add(rib);
+
+        group.position.set(pos[0], 0, pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'ps5_station') {
+        const group = new THREE.Group();
+        // Meja kabinet TV modern
+        const tvStandMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4 });
+        const stand = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.45, 0.65), tvStandMat);
+        stand.position.y = 0.225;
+        stand.castShadow = true;
+        group.add(stand);
+
+        // TV 40 inci
+        const tvGroup = new THREE.Group();
+        tvGroup.position.set(0.35, 0.45, 0);
+        const tvBezelMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.2 });
+        const tvFrame = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.1, 0.06), tvBezelMat);
+        tvFrame.position.y = 0.65;
+        tvGroup.add(tvFrame);
+
+        // Layar TV pixel art game Kairosoft
+        const tvScreenMat = new THREE.MeshStandardMaterial({
+          map: this.createPs5ScreenTexture(),
+          roughness: 0.1,
+          emissive: 0xffffff,
+          emissiveIntensity: 0.5,
+        });
+        const tvScreen = new THREE.Mesh(new THREE.PlaneGeometry(1.72, 1.02), tvScreenMat);
+        tvScreen.position.set(0, 0.65, 0.035);
+        tvGroup.add(tvScreen);
+
+        // Kaki TV aluminium
+        const tvFoot = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.04, 0.04, 0.2, 12),
+          new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.8 })
+        );
+        tvFoot.position.y = 0.1;
+        tvGroup.add(tvFoot);
+        group.add(tvGroup);
+
+        // Konsol PlayStation 5 berdiri vertikal di samping TV
+        const ps5Group = new THREE.Group();
+        ps5Group.position.set(-0.82, 0.45, 0.05);
+
+        // Plat bodi luar putih melengkung
+        const ps5ShellMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.25 });
+        const shellLeft = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.42, 0.28), ps5ShellMat);
+        shellLeft.position.set(-0.06, 0.21, 0);
+        ps5Group.add(shellLeft);
+
+        const shellRight = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.42, 0.28), ps5ShellMat);
+        shellRight.position.set(0.06, 0.21, 0);
+        ps5Group.add(shellRight);
+
+        // Inti hitam glossy
+        const ps5CoreMat = new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 0.15 });
+        const core = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.40, 0.26), ps5CoreMat);
+        core.position.set(0, 0.20, 0);
+        ps5Group.add(core);
+
+        // Lampu LED neon biru khas PS5
+        const ps5LedMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
+        const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.015, 0.24), ps5LedMat);
+        ledStrip.position.set(0, 0.38, 0);
+        ps5Group.add(ledStrip);
+
+        // Controller DualSense di dock
+        const padMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+        const pad1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.05, 0.08), padMat);
+        pad1.position.set(-0.82, 0.47, 0.22);
+        group.add(pad1);
+
+        group.add(ps5Group);
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'reception_counter') {
+        const group = new THREE.Group();
+        const woodMat = new THREE.MeshStandardMaterial({ color: 0xd89b4b, roughness: 0.5 });
+        const topMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.2 });
+
+        // Meja konter lobi resepsionis
+        const counterBase = new THREE.Mesh(new THREE.BoxGeometry(2.2, 1.0, 0.8), woodMat);
+        counterBase.position.y = 0.5;
+        counterBase.castShadow = true;
+        group.add(counterBase);
+
+        const counterTop = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.08, 0.9), topMat);
+        counterTop.position.y = 1.04;
+        group.add(counterTop);
+
+        // Bell resepsionis emas & buku tamu
+        const bell = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.05, 0.07, 0.05, 12),
+          new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.85, roughness: 0.2 })
+        );
+        bell.position.set(-0.4, 1.1, 0);
+        group.add(bell);
+
+        const book = new THREE.Mesh(
+          new THREE.BoxGeometry(0.24, 0.02, 0.3),
+          new THREE.MeshStandardMaterial({ color: 0x1e3a8a, roughness: 0.7 })
+        );
+        book.position.set(0.3, 1.09, 0);
+        group.add(book);
+
+        // Vas tanaman anggrek kecil
+        const vase = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.08, 0.06, 0.16, 12),
+          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 })
+        );
+        vase.position.set(0.8, 1.16, 0);
+        group.add(vase);
+        const flower = new THREE.Mesh(
+          new THREE.SphereGeometry(0.09, 8, 8),
+          new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.6 })
+        );
+        flower.position.set(0.8, 1.3, 0);
+        group.add(flower);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'shoe_rack') {
+        const group = new THREE.Group();
+        const rackMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.6 });
+        const rack = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.1, 0.45), rackMat);
+        rack.position.y = 0.55;
+        rack.castShadow = true;
+        group.add(rack);
+
+        // Sekat rak sepatu 3 tingkat
+        for (let i = 0; i < 3; i++) {
+          const shoeMat = new THREE.MeshStandardMaterial({
+            color: i === 0 ? 0x2563eb : i === 1 ? 0xd97706 : 0x059669,
+            roughness: 0.7,
+          });
+          const shoe1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.22), shoeMat);
+          shoe1.position.set(-0.2, 0.25 + i * 0.32, 0.05);
+          group.add(shoe1);
+          const shoe2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.06, 0.22), shoeMat);
+          shoe2.position.set(0.2, 0.25 + i * 0.32, 0.05);
+          group.add(shoe2);
+        }
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'sunken_tatami') {
+        const group = new THREE.Group();
+        // Frame kayu luar tatami bertingkat
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x5a3d28, roughness: 0.5 });
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.12, 2.4), frameMat);
+        frame.position.y = 0.06;
+        frame.receiveShadow = true;
+        group.add(frame);
+
+        // Karpet anyaman tikar tatami
+        const tatamiMat = new THREE.MeshStandardMaterial({
+          map: this.createTatamiTexture(),
+          roughness: 0.8,
+        });
+        const tatami = new THREE.Mesh(new THREE.PlaneGeometry(3.4, 2.2), tatamiMat);
+        tatami.rotation.x = -Math.PI / 2;
+        tatami.position.y = 0.125;
+        tatami.receiveShadow = true;
+        group.add(tatami);
+
+        // Meja rendah horigotatsu di tengah
+        const tableMat = new THREE.MeshStandardMaterial({ color: 0x3e1f0e, roughness: 0.4 });
+        const table = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.28, 0.85), tableMat);
+        table.position.y = 0.265;
+        table.castShadow = true;
+        group.add(table);
+
+        // Teko teh keramik Jepang & cangkir ocha
+        const teapotMat = new THREE.MeshStandardMaterial({ color: 0x0f766e, roughness: 0.3 });
+        const teapot = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.12, 12), teapotMat);
+        teapot.position.set(0, 0.46, 0);
+        group.add(teapot);
+
+        const cupMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+        const cup1 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 0.05, 10), cupMat);
+        cup1.position.set(-0.25, 0.43, 0);
+        group.add(cup1);
+        const cup2 = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 0.05, 10), cupMat);
+        cup2.position.set(0.25, 0.43, 0);
+        group.add(cup2);
+
+        // Bantal duduk merah zabuton di sisi meja
+        const zabutonMat = new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.8 });
+        const z1 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.04, 0.42), zabutonMat);
+        z1.position.set(-0.95, 0.145, 0);
+        group.add(z1);
+        const z2 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.04, 0.42), zabutonMat);
+        z2.position.set(0.95, 0.145, 0);
+        group.add(z2);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'art_easel') {
+        const group = new THREE.Group();
+        const easelWoodMat = new THREE.MeshStandardMaterial({ color: 0xc49a45, roughness: 0.6 });
+
+        // Kaki tripod easel kayu
+        const leg1 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 8), easelWoodMat);
+        leg1.position.set(-0.28, 0.8, 0.15);
+        leg1.rotation.z = 0.18;
+        leg1.rotation.x = -0.15;
+        group.add(leg1);
+
+        const leg2 = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 8), easelWoodMat);
+        leg2.position.set(0.28, 0.8, 0.15);
+        leg2.rotation.z = -0.18;
+        leg2.rotation.x = -0.15;
+        group.add(leg2);
+
+        const legBack = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.6, 8), easelWoodMat);
+        legBack.position.set(0, 0.8, -0.32);
+        legBack.rotation.x = 0.32;
+        group.add(legBack);
+
+        // Dudukan penyangga kanvas melintang
+        const ledge = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.04, 0.08), easelWoodMat);
+        ledge.position.set(0, 0.72, 0.18);
+        group.add(ledge);
+
+        // Kanvas lukisan Codex
+        const canvasMat = new THREE.MeshStandardMaterial({
+          map: this.createPaintingTexture(),
+          roughness: 0.5,
+        });
+        const painting = new THREE.Mesh(new THREE.PlaneGeometry(0.72, 0.52), canvasMat);
+        painting.position.set(0, 1.0, 0.17);
+        painting.rotation.x = -0.15;
+        group.add(painting);
+
+        // Palet cat kayu dengan bercak warna minyak
+        const palette = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.16, 0.16, 0.015, 16),
+          new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 })
+        );
+        palette.position.set(0.48, 0.55, 0.1);
+        palette.rotation.x = 0.2;
+        group.add(palette);
+
+        // Gelas kuas
+        const brushJar = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.06, 0.05, 0.14, 12),
+          new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.3 })
+        );
+        brushJar.position.set(-0.45, 0.4, 0.1);
+        group.add(brushJar);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'storage_shelves') {
+        const group = new THREE.Group();
+        this.storageRackGroup = group;
+
+        const steelMat = new THREE.MeshStandardMaterial({
+          color: 0x475569,
+          metalness: 0.8,
+          roughness: 0.3,
+        });
+
+        // 4 Tiang besi rak industri
+        const rackW = 2.4;
+        const rackH = 2.5;
+        const rackD = 0.9;
+        const postGeo = new THREE.BoxGeometry(0.06, rackH, 0.06);
+
+        const offsets = [
+          [-rackW / 2 + 0.05, -rackD / 2 + 0.05],
+          [rackW / 2 - 0.05, -rackD / 2 + 0.05],
+          [-rackW / 2 + 0.05, rackD / 2 - 0.05],
+          [rackW / 2 - 0.05, rackD / 2 - 0.05],
+        ];
+
+        offsets.forEach(([x, z]) => {
+          const post = new THREE.Mesh(postGeo, steelMat);
+          post.position.set(x, rackH / 2, z);
+          post.castShadow = true;
+          group.add(post);
+        });
+
+        // 3 Tingkat ambalan besi
+        const shelfLevels = [0.2, 1.0, 1.8];
+        shelfLevels.forEach((lvl) => {
+          const shelf = new THREE.Mesh(new THREE.BoxGeometry(rackW, 0.04, rackD), steelMat);
+          shelf.position.y = lvl;
+          shelf.castShadow = true;
+          shelf.receiveShadow = true;
+          group.add(shelf);
+        });
+
+        // InstancedMesh tumpukan kardus RAM logistik
+        // 24 slot total: 3 tier x 4 kolom x 2 baris
+        const boxGeo = new THREE.BoxGeometry(0.48, 0.34, 0.38);
+        const boxMat = new THREE.MeshStandardMaterial({
+          map: this.createCardboardTexture(),
+          roughness: 0.8,
+        });
+
+        const maxBoxes = 24;
+        this.storageBoxesInstanced = new THREE.InstancedMesh(boxGeo, boxMat, maxBoxes);
+        this.storageBoxesInstanced.castShadow = true;
+        this.storageBoxesInstanced.receiveShadow = true;
+
+        const dummy = new THREE.Object3D();
+        let idx = 0;
+
+        for (let tier = 0; tier < 3; tier++) {
+          const y = shelfLevels[tier] + 0.17 + 0.02;
+          for (let row = 0; row < 2; row++) {
+            const z = row === 0 ? -0.2 : 0.2;
+            for (let col = 0; col < 4; col++) {
+              const x = -0.75 + col * 0.5;
+              dummy.position.set(x, y, z);
+              dummy.rotation.y = idx % 2 === 0 ? 0.05 : -0.05;
+              dummy.updateMatrix();
+              this.storageBoxesInstanced.setMatrixAt(idx, dummy.matrix);
+              idx++;
+            }
+          }
+        }
+
+        // Tampilkan 8 boks sebagai default awal
+        this.storageBoxesInstanced.count = 8;
+        this.storageBoxesInstanced.instanceMatrix.needsUpdate = true;
+        group.add(this.storageBoxesInstanced);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
+
+      else if (f.type === 'hermes_console') {
+        const group = new THREE.Group();
+        const consoleBaseMat = new THREE.MeshStandardMaterial({
+          color: 0x1e293b,
+          metalness: 0.7,
+          roughness: 0.35,
+        });
+        const cyberCyanMat = new THREE.MeshBasicMaterial({ color: 0x06b6d4 });
+
+        // Konsol heksagonal operator Hermes
+        const hexConsole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.95, 1.05, 0.72, 6),
+          consoleBaseMat
+        );
+        hexConsole.position.y = 0.36;
+        hexConsole.castShadow = true;
+        hexConsole.receiveShadow = true;
+        group.add(hexConsole);
+
+        // Strip aksen neon cyber-cyan di sekeliling konsol
+        const neonRing = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.97, 0.97, 0.04, 6),
+          cyberCyanMat
+        );
+        neonRing.position.y = 0.68;
+        group.add(neonRing);
+
+        // Monitor CRT Ganda (layar cembung retro tabung)
+        const crtCaseMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 });
+        const crtGreenMat = new THREE.MeshStandardMaterial({
+          color: 0x10b981,
+          emissive: 0x059669,
+          emissiveIntensity: 1.2,
+          roughness: 0.2,
+        });
+        const crtCyanMat = new THREE.MeshStandardMaterial({
+          color: 0x06b6d4,
+          emissive: 0x0891b2,
+          emissiveIntensity: 1.2,
+          roughness: 0.2,
+        });
+
+        // CRT 1: Layar Hijau Terminal / Matrix data
+        const crt1 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.32, 0.32), crtCaseMat);
+        crt1.position.set(-0.28, 0.92, -0.15);
+        crt1.rotation.y = 0.35;
+        group.add(crt1);
+        const crt1Screen = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), crtGreenMat);
+        crt1Screen.scale.set(1.0, 0.8, 0.35);
+        crt1Screen.position.set(-0.24, 0.92, -0.01);
+        crt1Screen.rotation.y = 0.35;
+        group.add(crt1Screen);
+
+        // CRT 2: Layar Cyan Radar / Route packet
+        const crt2 = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.32, 0.32), crtCaseMat);
+        crt2.position.set(0.28, 0.92, -0.15);
+        crt2.rotation.y = -0.35;
+        group.add(crt2);
+        const crt2Screen = new THREE.Mesh(new THREE.SphereGeometry(0.18, 12, 12), crtCyanMat);
+        crt2Screen.scale.set(1.0, 0.8, 0.35);
+        crt2Screen.position.set(0.24, 0.92, -0.01);
+        crt2Screen.rotation.y = -0.35;
+        group.add(crt2Screen);
+
+        // Keyboard mekanik & panel tombol indikator
+        const keyMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.7 });
+        const keyboard = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.22), keyMat);
+        keyboard.position.set(0, 0.74, 0.18);
+        keyboard.rotation.x = -0.15;
+        group.add(keyboard);
+
+        // Daftarkan monitor Hermes untuk efek aktif saat orkestrasi
+        this.monitorsByDesk.set('desk_hermes', [
+          { screenMat: crt1Screen.material, glowBarMat: null },
+          { screenMat: crt2Screen.material, glowBarMat: null },
+        ]);
+
+        group.position.set(pos[0], pos[1], pos[2]);
+        this.scene.add(group);
+      }
     });
   }
 
@@ -774,6 +1510,14 @@ export class OfficeScene {
     wb.texture = newTex;
     wb.boardMat.map = newTex;
     wb.boardMat.needsUpdate = true;
+  }
+
+  updateStorageBoxes(boxCount = 8) {
+    if (!this.storageBoxesInstanced) return;
+    const maxBoxes = 24;
+    const count = Math.max(1, Math.min(Math.round(boxCount), maxBoxes));
+    this.storageBoxesInstanced.count = count;
+    this.storageBoxesInstanced.instanceMatrix.needsUpdate = true;
   }
 
   onResize() {

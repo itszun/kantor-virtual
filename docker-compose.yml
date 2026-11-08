@@ -1,0 +1,28 @@
+services:
+  kantor-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: 1001
+        GID: 1001
+    image: kantor-api:latest
+    container_name: kantor-api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8790:8790"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    environment:
+      - NODE_ENV=production
+      - KANTOR_PORT=8790
+      - KANTOR_DB=/app/data/kantor.db
+      - KANTOR_CLAUDE_PROJECTS=/claude-projects
+      - KANTOR_INGEST_TOKEN_FILE=/app/config/kantor/ingest_token
+      - TZ=Asia/Jakarta
+    volumes:
+      - ./data:/app/data
+      - /home/clouduser/.claude/projects:/claude-projects:ro
+      - /home/clouduser/.config/kantor:/app/config/kantor:ro

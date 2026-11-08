@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS VIRTUAL HQ — Floor Plan Versi 4 (Feng Shui Edition)</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">☯</div>
+      <div class="brand-text">
+        <div style="display: flex; align-items: center;">
+          <h1>NEXUS VIRTUAL HQ</h1>
+          <span class="v4-badge">V4 • FENG SHUI HARMONY</span>
+        </div>
+        <p>Denah Tata Ruang Spasial Berbasis Prinsip Bagua 8 Penjuru & 5 Elemen Wu Xing</p>
+      </div>
+    </div>
+
+    <div class="nav-controls">
+      <!-- View Modes -->
+      <div class="view-mode-tabs">
+        <button id="modeVisualBtn" class="tab-btn active" data-mode="visual" title="Tampilan Modern 2.5D Render">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Visual 2.5D
+        </button>
+        <button id="modeFengShuiBtn" class="tab-btn tab-fengshui" data-mode="fengshui" title="Analisis Sektor Bagua & Aliran Qi">
+          <span style="font-size: 13px;">☯</span>
+          Bagua & Qi Flow
+        </button>
+        <button id="modeBlueprintBtn" class="tab-btn" data-mode="blueprint" title="Tampilan Denah Teknis Arsitektural CAD">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Blueprint CAD
+        </button>
+        <button id="modeRadarBtn" class="tab-btn" data-mode="radar" title="Heatmap Audio Spasial & Akustik">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20M2 12a14.5 14.5 0 0 0 20 0"/></svg>
+          Radar Audio
+        </button>
+      </div>
+
+      <!-- User Status Selector -->
+      <div class="status-badge-container">
+        <div class="status-indicator" id="statusDot"></div>
+        <select class="status-select" id="userStatusSelect">
+          <option value="available">🟢 Tersedia (Harmonious Qi)</option>
+          <option value="meeting">🟣 Sedang Rapat (In Meeting)</option>
+          <option value="focus">🔴 Fokus Mendalam (Deep Zen)</option>
+          <option value="coffee">☕ Istirahat Teh / Kopi</option>
+          <option value="away">🟡 Sedang Keluar (Away)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Layout -->
+  <div class="app-body">
+    
+    <!-- Left Sidebar: Bagua, Five Elements & Directory -->
+    <aside class="sidebar-left" id="sidebarLeft">
+      
+      <!-- Five Elements (Wu Xing) Matrix -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">
+          <span>Keseimbangan 5 Elemen (Wu Xing)</span>
+          <span style="color: #fbbf24; font-family: var(--font-mono); font-size: 0.72rem;">98% SEIMBANG</span>
+        </div>
+        <div class="wu-xing-container">
+          <div class="wu-xing-pill pill-water">
+            <span>💧 AIR</span>
+            <span style="font-size: 0.62rem; color: #7dd3fc;">Utara/Karir</span>
+          </div>
+          <div class="wu-xing-pill pill-wood">
+            <span>🌳 KAYU</span>
+            <span style="font-size: 0.62rem; color: #86efac;">Timur/Tumbuh</span>
+          </div>
+          <div class="wu-xing-pill pill-fire">
+            <span>🔥 API</span>
+            <span style="font-size: 0.62rem; color: #fca5a5;">Selatan/Fame</span>
+          </div>
+          <div class="wu-xing-pill pill-earth">
+            <span>⛰️ TANAH</span>
+            <span style="font-size: 0.62rem; color: #fde68a;">Tengah/Stabil</span>
+          </div>
+          <div class="wu-xing-pill pill-metal">
+            <span>⚪ LOGAM</span>
+            <span style="font-size: 0.62rem; color: #e2e8f0;">B.Laut/Vision</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">
+          <span>Metrik Kantor V4</span>
+          <span style="color: var(--accent-cyan); font-family: var(--font-mono);">BAGUA OPTIMIZED</span>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statOnline">28</div>
+            <div class="stat-label">Anggota Online</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statDesks">44/48</div>
+            <div class="stat-label">Meja Komando Free</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color: #fbbf24;">0 Sha Qi</div>
+            <div class="stat-label">Sudut Beracun Dieliminasi</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" style="color: var(--accent-emerald);">Tai Qi</div>
+            <div class="stat-label">Zen Atrium di Pusat</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Room Navigation -->
+      <div class="sidebar-title" style="padding: 12px 16px 4px 16px;">
+        <span>Sektor Bagua & Ruangan V4</span>
+        <span id="roomCountBadge" style="font-size: 0.7rem; color: var(--text-muted);">9 Sektor Bagua</span>
+      </div>
+      
+      <div class="room-quicklist" id="roomQuickList">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+
+      <!-- Simulated Colleagues -->
+      <div class="sidebar-section">
+        <div class="sidebar-title">
+          <span>Rekan Kerja Terdekat</span>
+          <span style="font-size: 0.7rem; color: var(--accent-cyan);">Klik untuk Teleport</span>
+        </div>
+        <div class="member-list" id="colleaguesList">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Canvas Workspace -->
+    <main class="canvas-wrapper" id="canvasWrapper">
+      <canvas id="floorCanvas"></canvas>
+
+      <!-- Search Floating Box -->
+      <div class="canvas-hud">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" color="#94a3b8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Cari sektor Bagua, ruangan, atau rekan...">
+        </div>
+      </div>
+
+      <!-- Keyboard Hint -->
+      <div class="keyboard-hint">
+        <span>Gunakan tombol</span>
+        <span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span>
+        <span>atau</span>
+        <span class="kbd">Panah</span>
+        <span>/ Klik untuk berjalan</span>
+      </div>
+
+      <!-- Proximity & Mic HUD -->
+      <div class="proximity-hud">
+        <div class="proximity-item">
+          <span style="color: var(--text-muted);">Posisi & Sektor:</span>
+          <strong id="currentRoomText" style="color: var(--accent-cyan);">Pintu Masuk (Kan - Air)</strong>
+        </div>
+        <div class="proximity-item">
+          <span style="color: var(--text-muted);">Audio Spasial:</span>
+          <span id="proximityNearbyCount" style="font-weight: 600; color: #fff;">0 rekan</span>
+        </div>
+        <button class="mic-toggle active" id="micToggleBtn" title="Toggle Mikrofon Spasial">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+        </button>
+      </div>
+
+      <!-- Feng Shui Overlay Legend Bar (Visible in Feng Shui mode) -->
+      <div class="fengshui-overlay-legend" id="fengshuiLegend">
+        <span>☯ <strong>Panduan Bagua V4:</strong></span>
+        <span style="color: #38bdf8;">💧 Utara: Karir & Pintu Masuk</span>
+        <span style="color: #fbbf24;">⛰️ Pusat: Tai Qi Zen Garden</span>
+        <span style="color: #cbd5e1;">⚪ B.Laut: Pemimpin/Boardroom</span>
+        <span style="color: #4ade80;">🌳 Tenggara: Kemakmuran/Strategi</span>
+        <span style="color: #f87171;">🔥 Selatan: Auditorium/Fame</span>
+      </div>
+
+      <!-- Ambience Sound Synthesizer Bar -->
+      <div class="ambience-bar">
+        <span style="font-size: 0.74rem; color: var(--text-secondary); font-weight: 600;">Harmoni Suara:</span>
+        <button class="ambience-btn active" data-sound="none">Hening</button>
+        <button class="ambience-btn" data-sound="zenfountain">🌊 Air Mengalir Zen</button>
+        <button class="ambience-btn" data-sound="coffee">☕ Cafe Santai</button>
+        <button class="ambience-btn" data-sound="rain">🌧️ Hujan LoFi</button>
+        <button class="ambience-btn" data-sound="office">🏢 White Noise</button>
+      </div>
+
+      <!-- Floating Canvas Zoom & View Controls -->
+      <div class="canvas-controls">
+        <button class="icon-btn" id="zoomInBtn" title="Perbesar (Zoom In)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <button class="icon-btn" id="zoomOutBtn" title="Perkecil (Zoom Out)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <button class="icon-btn" id="centerAvatarBtn" title="Pusatkan Kamera ke Avatar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>
+        </button>
+        <button class="icon-btn" id="exportPngBtn" title="Unduh Blueprint V4 sebagai Gambar PNG">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- Right Drawer: Room & Hot-Desk Inspector -->
+    <aside class="sidebar-right hidden" id="sidebarRight">
+      <div class="detail-header">
+        <span class="detail-tag" id="drawerTag" style="background: rgba(59, 130, 246, 0.2); color: var(--accent-cyan);">Meeting Room</span>
+        <button class="close-btn" id="closeDrawerBtn" title="Tutup">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <h2 class="detail-title" id="drawerTitle">Boardroom Garuda</h2>
+        <p class="detail-subtitle" id="drawerSubtitle">Ruang Konferensi Utama & Dewan Direksi</p>
+      </div>
+
+      <div class="detail-content">
+        
+        <!-- Feng Shui Bagua Alignment Card -->
+        <div class="fengshui-card">
+          <div class="fengshui-card-title">
+            <span>☯ Analisis Feng Shui & Sektor Bagua:</span>
+          </div>
+          <p class="fengshui-card-desc" id="drawerFengShuiText">
+            Terletak di sektor Barat Laut (Qian - Elemen Logam). Sektor ini merepresentasikan kepemimpinan puncak, karisma dewan direksi, dan dukungan mentor. Meja komando membelakangi dinding solid untuk stabilitas mutlak.
+          </p>
+        </div>
+
+        <!-- Room Specifications -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="metric-row">
+            <span class="metric-label">Kapasitas Maksimal:</span>
+            <span class="metric-val" id="drawerCapacity">16 Avatar</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Luas Virtual (Equiv):</span>
+            <span class="metric-val" id="drawerArea">84 m²</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Karakteristik Qi:</span>
+            <span class="metric-val" id="drawerQiQuality" style="color: #fbbf24;">Sheng Qi (Energi Bertumbuh)</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Isolasi Akustik:</span>
+            <span class="metric-val" id="drawerAcoustic" style="color: var(--accent-emerald);">STC 55 (Kedap Suara 100%)</span>
+          </div>
+        </div>
+
+        <!-- Amenities / Facilities -->
+        <div>
+          <div class="sidebar-title" style="margin-bottom: 8px;">Fasilitas & Penyelaras Elemen</div>
+          <div class="amenity-chip-grid" id="drawerAmenities">
+            <!-- Amenities chips -->
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; flex-direction: column; gap: 9px; margin-top: 6px;">
+          <button class="action-btn-primary" id="teleportBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Teleport ke Posisi Komando
+          </button>
+          <button class="action-btn-secondary" id="joinMeetingBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            Mulai Video Call Spasial
+          </button>
+          <button class="action-btn-secondary" id="bookRoomBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Jadwalkan Sesi Harmonis
+          </button>
+        </div>
+
+        <!-- Active Occupants in this room -->
+        <div>
+          <div class="sidebar-title" style="margin-bottom: 8px;">
+            <span>Orang di Ruangan Ini</span>
+            <span id="drawerOccupantCount" style="color: var(--accent-cyan); font-weight: 700;">2 Orang</span>
+          </div>
+          <div class="member-list" id="drawerOccupantsList">
+            <!-- Occupant list -->
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

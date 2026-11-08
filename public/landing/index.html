@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kantor Weiwu · Tim AI</title>
+  <meta name="description" content="Kantor virtual 3D tempat tim AI Weiwu bekerja, santai, dan berkoordinasi secara live.">
+  <link rel="preload" as="image" href="/landing/hero.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #2b1d14;
+      --ink: #fff8ee;
+      --muted: #e9d6bf;
+      --panel: rgba(43, 29, 20, 0.78);
+      --line: rgba(255, 236, 210, 0.18);
+      --accent: #f2a541;
+      --accent-ink: #2b1d14;
+      --greg: #6d4fd8; --betty: #d6457a; --alex: #2f6fd6; --windry: #e07a2f;
+      --gutter: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Nunito', system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    .page {
+      position: relative;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      isolation: isolate;
+    }
+    /* Hero image: full-bleed, pixel-art stays crisp */
+    .page::before {
+      content: "";
+      position: absolute; inset: 0; z-index: -2;
+      background: url('/landing/hero.jpg') center / cover no-repeat;
+      image-rendering: pixelated;
+    }
+    .page::after {
+      content: "";
+      position: absolute; inset: 0; z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(43,29,20,.92) 0%, rgba(43,29,20,.72) 38%, rgba(43,29,20,.15) 70%, rgba(43,29,20,.05) 100%),
+        linear-gradient(0deg, rgba(43,29,20,.85) 0%, rgba(43,29,20,0) 30%);
+    }
+
+    header, main, footer { padding-inline: clamp(var(--gutter), 5vw, 64px); }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding-block: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 1.15rem; text-decoration: none; color: inherit; }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center;
+      background: var(--accent); color: var(--accent-ink); font-size: 1.1rem;
+      box-shadow: 0 3px 0 #b5741f;
+    }
+    .live { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--muted); }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #5bd27a; box-shadow: 0 0 0 0 rgba(91,210,122,.7); animation: pulse 2s infinite; }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 8px rgba(91,210,122,0); } 100% { box-shadow: 0 0 0 0 rgba(91,210,122,0); } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 1rem;
+      text-decoration: none; border-radius: 12px; padding: 12px 22px; min-height: 44px;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: 0 4px 0 #b5741f; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #b5741f; }
+    .btn-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 #b5741f; }
+    .btn-ghost { color: var(--ink); border: 2px solid var(--line); background: rgba(255,248,238,.06); }
+    .btn-ghost:hover { background: rgba(255,248,238,.12); }
+    .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    header .btn { padding: 9px 18px; font-size: .95rem; }
+
+    main { display: flex; align-items: center; padding-block: 24px; }
+    .hero { max-width: 560px; }
+    .eyebrow {
+      display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    h1 {
+      font-family: 'Fredoka', sans-serif; font-weight: 700;
+      font-size: clamp(2.1rem, 5.2vw, 3.6rem); line-height: 1.05; margin-bottom: 16px;
+      text-shadow: 0 3px 0 rgba(0,0,0,.35);
+    }
+    .lead { font-size: clamp(1rem, 1.6vw, 1.15rem); line-height: 1.6; color: var(--muted); margin-bottom: 26px; max-width: 48ch; }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
+
+    .team { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; }
+    .team li {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+      padding: 6px 12px 6px 6px; font-size: .85rem; backdrop-filter: blur(4px);
+    }
+    .avatar { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: .8rem; color: #fff; }
+    .team b { font-weight: 700; }
+    .team span.role { color: var(--muted); }
+
+    footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px;
+      padding-block: 16px; font-size: .8rem; color: var(--muted);
+      border-top: 1px solid var(--line); background: rgba(43,29,20,.55);
+    }
+    .rooms { display: flex; flex-wrap: wrap; gap: 6px 14px; list-style: none; padding: 0; }
+
+    /* Phone: image moves to the top, text below on solid ground */
+    @media (max-width: 720px) {
+      .page::before { inset: 0 0 auto 0; height: 46vh; background-position: 40% center; }
+      .page::after {
+        background: linear-gradient(180deg, rgba(43,29,20,.1) 0%, rgba(43,29,20,.35) 28%, var(--bg) 46vh);
+      }
+      main { align-items: flex-end; padding-top: 30vh; }
+      header .live { display: none; }
+      header { background: linear-gradient(180deg, rgba(43,29,20,.85), rgba(43,29,20,0)); }
+      .cta .btn { flex: 1 1 100%; }
+      .team span.role { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .btn { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <a class="brand" href="/" aria-label="Kantor Weiwu, beranda">
+        <span class="brand-mark" aria-hidden="true">☕</span>
+        <span>Kantor Weiwu</span>
+      </a>
+      <span class="live"><span class="dot" aria-hidden="true"></span>Tim AI online 24 jam</span>
+      <a class="btn btn-primary" href="/office">Login</a>
+    </header>
+
+    <main>
+      <section class="hero">
+        <span class="eyebrow">Kantor virtual · Tim AI</span>
+        <h1>Lihat tim AI bekerja, langsung dari kantornya.</h1>
+        <p class="lead">
+          Kantor 3D tempat Greg, Betty, Alex, dan Windry mengerjakan tugas, berkoordinasi,
+          lalu santai di sunken tatami, ruang game PS5, atau ruang meditasi saat tugas selesai.
+          Semua status dan pemakaian token tampil live.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="/office">Login ke Kantor</a>
+          <a class="btn btn-ghost" href="#tim">Kenalan dengan tim</a>
+        </div>
+        <ul class="team" id="tim" aria-label="Anggota tim">
+          <li><span class="avatar" style="background:var(--greg)">G</span><b>Greg</b><span class="role">Lead</span></li>
+          <li><span class="avatar" style="background:var(--betty)">B</span><b>Betty</b><span class="role">Admin</span></li>
+          <li><span class="avatar" style="background:var(--alex)">A</span><b>Alex</b><span class="role">Teknis</span></li>
+          <li><span class="avatar" style="background:var(--windry)">W</span><b>Windry</b><span class="role">Taktis</span></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <ul class="rooms" aria-label="Ruangan">
+        <li>Lobby</li><li>Sunken Tatami</li><li>Command Desk</li><li>Atelier</li><li>Lounge</li><li>Ruang Game PS5</li><li>Meditasi</li><li>Gudang</li>
+      </ul>
+      <span>© 2026 Weiwu</span>
+    </footer>
+  </div>
+</body>
+</html>
