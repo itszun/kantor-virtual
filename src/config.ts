@@ -24,6 +24,10 @@ export interface Config {
   personasPath: string;
   personas: Persona[];
   publicDir: string;
+  claudeProjectsDir: string | null;
+  scanIntervalS: number;
+  scanMaxAgeDays: number;
+  pricingPath: string;
 }
 
 export function loadPersonas(personasPath: string): Persona[] {
@@ -42,6 +46,12 @@ export function loadConfig(overrides: Partial<Config> = {}): Config {
   const personasPath = overrides.personasPath ?? path.join(PROJECT_ROOT, 'config', 'personas.json');
   const personas = overrides.personas ?? loadPersonas(personasPath);
   const publicDir = overrides.publicDir ?? path.join(PROJECT_ROOT, 'public');
+  const claudeProjectsDir = overrides.claudeProjectsDir !== undefined
+    ? overrides.claudeProjectsDir
+    : (process.env.KANTOR_CLAUDE_PROJECTS || null);
+  const scanIntervalS = overrides.scanIntervalS ?? (process.env.KANTOR_SCAN_INTERVAL_S ? parseInt(process.env.KANTOR_SCAN_INTERVAL_S, 10) : 60);
+  const scanMaxAgeDays = overrides.scanMaxAgeDays ?? (process.env.KANTOR_SCAN_MAX_AGE_DAYS ? parseInt(process.env.KANTOR_SCAN_MAX_AGE_DAYS, 10) : 7);
+  const pricingPath = overrides.pricingPath ?? (process.env.KANTOR_PRICING_FILE || path.join(PROJECT_ROOT, 'config', 'pricing.json'));
 
   return {
     port,
@@ -52,6 +62,10 @@ export function loadConfig(overrides: Partial<Config> = {}): Config {
     personasPath,
     personas,
     publicDir,
+    claudeProjectsDir,
+    scanIntervalS,
+    scanMaxAgeDays,
+    pricingPath,
   };
 }
 

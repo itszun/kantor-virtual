@@ -7,6 +7,9 @@ import { loadConfig, type Config } from './config.ts';
 import { initDatabase } from './db.ts';
 import { validateEvent, ingest } from './events.ts';
 import { getSnapshot, sweepStale, getRecentTasks } from './state.ts';
+import { getUsageReport } from './usage.ts';
+import { scanOnce } from './scanner.ts';
+import { loadPricing } from './pricing.ts';
 
 const MIME_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -94,6 +97,20 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
   }, 60000);
   staleInterval.unref();
 
+  // Claude transcript scanner (bila KANTOR_CLAUDE_PROJECTS di-set)
+  const scanInterval = config.claudeProjectsDir
+    ? setInterval(() => {
+        try {
+          const pricing = loadPricing(config.pricingPath);
+          const r = scanOnce(db, config.claudeProjectsDir!, pricing, new Date(), config.scanMaxAgeDays);
+          if (r.newUsageRows > 0) broadcastSnapshot();
+        } catch (err: unknown) {
+          console.error('Peringatan: Gagal scan transcript Claude:', err);
+        }
+      }, config.scanIntervalS * 1000)
+    : null;
+  scanInterval?.unref();
+
   const server = http.createServer((req, res) => {
     const host = req.headers.host || 'localhost';
     const parsedUrl = new URL(req.url || '/', `http://${host}`);
@@ -122,6 +139,16 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
       const history = getRecentTasks(db, limit);
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(history));
+      return;
+    }
+
+    // 3b. GET /api/usage
+    if (pathname === '/api/usage' && method === 'GET') {
+      const daysParam = parseInt(parsedUrl.searchParams.get('days') || '7', 10);
+      const days = isNaN(daysParam) ? 7 : daysParam;
+      const report = getUsageReport(db, config.personas, days);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(report));
       return;
     }
 
@@ -299,6 +326,9 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
   server.closeAll = async () => {
     clearInterval(heartbeatInterval);
     clearInterval(staleInterval);
+    if (scanInterval) {
+      clearInterval(scanInterval);
+    }
     for (const client of sseClients) {
       try {
         client.end();
@@ -322,6 +352,9 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
   server.on('close', () => {
     clearInterval(heartbeatInterval);
     clearInterval(staleInterval);
+    if (scanInterval) {
+      clearInterval(scanInterval);
+    }
     for (const client of sseClients) {
       try {
         client.end();

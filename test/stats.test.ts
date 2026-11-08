@@ -100,11 +100,11 @@ test('Statistik agregasi hari ini dan deduplikasi usage', async (t) => {
   });
   assert.equal(u2.status, 202);
 
-  // Periksa snapshot stats: harus dihitung satu kali saja (185 token, cost 0.0025)
-  // 100 + 50 + 10 + 5 + 20 = 185
+  // Periksa snapshot stats: harus dihitung satu kali saja (165 token, thinking tidak dijumlahkan, cost 0.0025)
+  // 100 + 50 + 10 + 5 = 165
   const stateRes2 = await fetch(`http://127.0.0.1:${PORT}/api/state`);
   const state2 = await stateRes2.json();
-  assert.equal(state2.stats.tokens_today, 185);
+  assert.equal(state2.stats.tokens_today, 165);
   assert.equal(state2.stats.cost_today_usd, 0.0025);
 
   // Periksa langsung ke DB usage row count

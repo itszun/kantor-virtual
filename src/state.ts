@@ -92,7 +92,7 @@ export function getSnapshot(db: DatabaseSync, personas: Persona[]): Snapshot {
 
   const tokenRow = db
     .prepare(
-      `SELECT SUM(input + output + cache_read + cache_write + thinking) as total_tokens FROM usage WHERE ts >= ? AND ts <= ?`
+      `SELECT SUM(input + output + cache_read + cache_write) as total_tokens FROM usage WHERE ts >= ? AND ts <= ?`
     )
     .get(startIso, endIso) as { total_tokens: number | null } | undefined;
   const tokensToday = tokenRow?.total_tokens ? Number(tokenRow.total_tokens) : 0;
