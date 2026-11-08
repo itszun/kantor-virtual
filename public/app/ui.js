@@ -66,6 +66,10 @@ export class UIManager {
     for (const p of personas || []) this.engineById.set(p.id, p.engine || '');
   }
 
+  setOfficeConfig(office) {
+    this.officeConfig = office;
+  }
+
   initClock() {
     const updateTime = () => {
       if (!this.isConnected) return;
