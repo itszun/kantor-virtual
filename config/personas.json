@@ -33,15 +33,15 @@
   },
   {
     "id": "codex",
-    "name": "Codex",
-    "role": "Reviewer & second opinion (Codex CLI)",
-    "engine": "codex",
+    "name": "Muu",
+    "role": "Pengembang 3D / Three.js",
+    "engine": "Codex CLI",
     "color": "#10a37f",
     "desk_spot": "desk_codex"
   },
   {
     "id": "hermes",
-    "name": "Hermes",
+    "name": "Dexter",
     "role": "Orchestrator & Dispatcher",
     "engine": "Hermes Agent",
     "color": "#06b6d4",

@@ -20,8 +20,8 @@ test('classifyIntent: klasifikasi tugas ke spesialis yang tepat', () => {
 
   // Creative / Visual -> agy (alex) (Agy Artist)
   assert.equal(classifyIntent('Buat gambar lukisan cat minyak untuk atelier').target, 'alex');
-  assert.equal(classifyIntent('Render aset visual 3D untuk kantor').target, 'alex');
-  assert.equal(classifyIntent('Bikin shader efek asap Three.js').target, 'alex');
+  assert.equal(classifyIntent('Render aset visual 3D untuk kantor').target, 'codex');
+  assert.equal(classifyIntent('Bikin shader efek asap Three.js').target, 'codex');
 
   // Review / Second Opinion / Text -> codex
   assert.equal(classifyIntent('Berikan second opinion draf arsitektur').target, 'codex');

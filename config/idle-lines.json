@@ -5,7 +5,7 @@
     "Sprint kali ini on track, aman terkendali.",
     "Ada ide baru buat efisiensi kerjaan kita?",
     "Santai dulu 5 menit sebelum delegasi berikutnya.",
-    "Betty, Alex, Windry, Codex — mantap kerjaannya hari ini.",
+    "Betty, Alex, Windry, Muu — mantap kerjaannya hari ini.",
     "Ngeliat pemandangan kota bentar biar pikiran jernih.",
     "Kopi pantry aromanya mantap banget siang ini.",
     "Review delegasi bentar di whiteboard ah.",
@@ -120,14 +120,14 @@
       "speakers": ["codex", "greg"],
       "lines": [
         { "speaker": "codex", "text": "Mas Greg, review second opinion untuk draf PRD sudah selesai ditelaah." },
-        { "speaker": "greg", "text": "Terima kasih Codex, telaah kritismu membantu menajamkan arsitektur kita." }
+        { "speaker": "greg", "text": "Terima kasih Muu, telaah kritismu membantu menajamkan arsitektur kita." }
       ]
     },
     {
       "speakers": ["codex", "alex"],
       "lines": [
         { "speaker": "codex", "text": "Alex, aku sudah cek implementasi modul tadi, alur exception-nya sudah rapi." },
-        { "speaker": "alex", "text": "Sip Codex, second opinion darimu bikin kita makin yakin sebelum rilis." }
+        { "speaker": "alex", "text": "Sip Muu, second opinion darimu bikin kita makin yakin sebelum rilis." }
       ]
     }
   ]

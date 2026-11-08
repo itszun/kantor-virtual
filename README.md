@@ -22,8 +22,8 @@ Denah acuan: **Floorplan v6 (Skyline Office, 9 zona)** — spesifikasi lengkap d
 | Greg | Claude Code (sesi utama) | Lead, perencana, reviewer |
 | Betty | Claude Code (subagent) | Administrasi |
 | Alex / Windry | agy | Task force teknis & taktis |
-| Codex | Codex CLI | Implementasi Three.js |
-| Hermes | Dispatcher | Routing tugas |
+| Muu | Codex CLI | Pengembang 3D / Three.js |
+| Dexter | Hermes Agent | Dispatcher, routing tugas |
 
 ## Teknologi
 

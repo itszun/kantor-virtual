@@ -23,8 +23,17 @@ export interface ClassificationResult {
 export function classifyIntent(prompt: string): ClassificationResult {
   const p = prompt.toLowerCase();
 
-  // 1. Creative / Visual / Imagery / 3D Asset / Painting -> agy (alex) (Agy Artist)
-  if (/(gambar|lukis|shader|visual|kreatif|art|foto|desain|easel|kanvas|atelier|aset 3d|diorama)/i.test(p)) {
+  // 1. 3D / Three.js / scene -> Muu (persona codex)
+  if (/(three\.?js|shader|aset 3d|aset visual 3d|visual 3d|diorama|scene 3d|render 3d|isometrik|navgraph|floorplan)/i.test(p)) {
+    return {
+      target: 'codex',
+      reason: 'Tugas 3D / Three.js didelegasikan ke Muu (Codex CLI)',
+      level: 'technical',
+    };
+  }
+
+  // 2. Gambar 2D / lukisan -> agy (alex) (Agy Artist)
+  if (/(gambar|lukis|visual|kreatif|art|foto|desain|easel|kanvas|atelier)/i.test(p)) {
     return {
       target: 'alex',
       reason: 'Tugas bernuansa visual, gambar, atau lukisan didelegasikan ke agy (Agy Artist)',
@@ -36,7 +45,7 @@ export function classifyIntent(prompt: string): ClassificationResult {
   if (/(second opinion|second-opinion|opini kedua|telaah|tinjauan|kritik teks|analisis teks|puisi)/i.test(p)) {
     return {
       target: 'codex',
-      reason: 'Tugas review teks, telaah mendalam, atau second opinion via Codex CLI',
+      reason: 'Tugas review teks, telaah mendalam, atau second opinion via Muu (Codex CLI)',
       level: 'review',
     };
   }
@@ -101,11 +110,11 @@ async function sendKantorEvent(event: Record<string, unknown>): Promise<void> {
     });
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
-      process.stderr.write(`Peringatan Hermes: Gagal kirim event (status ${res.status}): ${errText}\n`);
+      process.stderr.write(`Peringatan Dexter: Gagal kirim event (status ${res.status}): ${errText}\n`);
     }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`Peringatan Hermes: Gagal kirim event: ${msg}\n`);
+    process.stderr.write(`Peringatan Dexter: Gagal kirim event: ${msg}\n`);
   } finally {
     clearTimeout(timeoutId);
   }
@@ -142,7 +151,7 @@ export async function runHermesDispatcher(args: string[]): Promise<number> {
   const taskId = 'tsk-hermes-' + crypto.randomUUID().slice(0, 8);
   const dispatchTitle = `[Dispatch -> ${classification.target}] ${taskTitle}`;
 
-  process.stdout.write(`🛰️ Hermes Orchestrator: Mengevaluasi tugas "${taskTitle}"\n`);
+  process.stdout.write(`🛰️ Dexter: Mengevaluasi tugas "${taskTitle}"\n`);
   process.stdout.write(`   Target   : ${classification.target.toUpperCase()}\n`);
   process.stdout.write(`   Alasan   : ${classification.reason}\n`);
   process.stdout.write(`   Kategori : ${classification.level}\n\n`);
@@ -207,7 +216,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   runHermesDispatcher(process.argv.slice(2)).then((code) => {
     process.exit(code);
   }).catch((err) => {
-    process.stderr.write(`Error fatal Hermes dispatcher: ${err}\n`);
+    process.stderr.write(`Error fatal Dexter: ${err}\n`);
     process.exit(1);
   });
 }
