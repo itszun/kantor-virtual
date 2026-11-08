@@ -71,7 +71,7 @@ export function getSnapshot(db: DatabaseSync, personas: Persona[]): Snapshot {
       role: persona.role,
       color: persona.color,
       state: isWorking ? 'working' : 'idle',
-      spot: isWorking ? persona.desk_spot : 'lounge',
+      spot: isWorking ? persona.desk_spot : 'sunken_tatami_1',
       task: isWorking
         ? {
             id: runningTask.task_id,

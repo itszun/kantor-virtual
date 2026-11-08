@@ -46,13 +46,13 @@ test('Pembersihan stale task (sweepStale)', async (t) => {
   const sweptCount = sweepStale(server.db, server.config.staleMinClaude, server.config.staleMinAgy);
   assert.equal(sweptCount, 1);
 
-  // Setelah sweep: alex harus idle di lounge, greg tetap working di desk_greg
+  // Setelah sweep: alex harus idle di sunken_tatami_1, greg tetap working di desk_greg
   const snapAfter = getSnapshot(server.db, server.config.personas);
   const alexAfter = snapAfter.personas.find((p) => p.id === 'alex');
   const gregAfter = snapAfter.personas.find((p) => p.id === 'greg');
 
   assert.equal(alexAfter?.state, 'idle');
-  assert.equal(alexAfter?.spot, 'lounge');
+  assert.equal(alexAfter?.spot, 'sunken_tatami_1');
   assert.equal(alexAfter?.task, null);
 
   assert.equal(gregAfter?.state, 'working');

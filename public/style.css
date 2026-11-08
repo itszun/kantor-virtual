@@ -617,3 +617,16 @@ body {
     flex: auto;
   }
 }
+
+/* PWA Safe Area Support (iPhone notch & home indicator) */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .app-header {
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+  .app-container {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+

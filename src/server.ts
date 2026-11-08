@@ -24,6 +24,7 @@ const MIME_TYPES: Record<string, string> = {
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
+  '.webmanifest': 'application/manifest+json',
 };
 
 function timingSafeCheck(a: string, b: string): boolean {
@@ -409,10 +410,14 @@ export function createServer(overrides: Partial<Config> = {}): KantorServer {
 
     const ext = path.extname(finalPath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-    res.writeHead(200, {
+    const responseHeaders: Record<string, string | number> = {
       'Content-Type': contentType,
       'Content-Length': stat.size,
-    });
+    };
+    if (filePathName === '/sw.js') {
+      responseHeaders['Cache-Control'] = 'no-cache';
+    }
+    res.writeHead(200, responseHeaders);
 
     if (method === 'HEAD') {
       res.end();

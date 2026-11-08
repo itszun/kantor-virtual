@@ -32,7 +32,7 @@ test('Alur task persona (start -> working di desk -> end -> idle di lounge)', as
   const initState = await initStateRes.json();
   const initAlex = initState.personas.find((p: { id: string }) => p.id === 'alex');
   assert.equal(initAlex.state, 'idle');
-  assert.equal(initAlex.spot, 'lounge');
+  assert.equal(initAlex.spot, 'sunken_tatami_1');
   assert.equal(initAlex.task, null);
 
   // Kirim task.start alex
@@ -83,7 +83,7 @@ test('Alur task persona (start -> working di desk -> end -> idle di lounge)', as
   const endState = await endStateRes.json();
   const endAlex = endState.personas.find((p: { id: string }) => p.id === 'alex');
   assert.equal(endAlex.state, 'idle');
-  assert.equal(endAlex.spot, 'lounge');
+  assert.equal(endAlex.spot, 'sunken_tatami_1');
   assert.equal(endAlex.task, null);
   assert.equal(endState.stats.active_now, 0);
 

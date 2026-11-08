@@ -13,23 +13,16 @@ export class IdleManager {
 
     // Daftar spot santai yang tersedia dengan bobot
     this.relaxSpots = [
-      { spot: 'lounge_1', weight: 3 },
-      { spot: 'lounge_2', weight: 3 },
-      { spot: 'lounge_3', weight: 3 },
-      { spot: 'lounge_4', weight: 3 },
-      { spot: 'coffee', weight: 2.5 },
-      { spot: 'tv', weight: 2.5 },
-      { spot: 'window_1', weight: 2 },
-      { spot: 'window_2', weight: 2 },
-      { spot: 'whiteboard', weight: 1.5 },
-      { spot: 'ps5_sofa_1', weight: 3.5 },
-      { spot: 'ps5_sofa_2', weight: 3.0 },
-      { spot: 'meditation_1', weight: 2.5 },
-      { spot: 'meditation_2', weight: 2.5 },
-      { spot: 'sunken_tatami_1', weight: 3.0 },
-      { spot: 'sunken_tatami_2', weight: 3.0 },
-      { spot: 'reception_desk', weight: 1.5 },
-      { spot: 'storage_rack', weight: 1.5 },
+      { spot: 'executive_sofa', weight: 1.5 }, { spot: 'coffee', weight: 2.5 },
+      { spot: 'pantry_bar', weight: 2 }, { spot: 'pantry_espresso', weight: 1.5 },
+      { spot: 'tv', weight: 2.5 }, { spot: 'ps5_sofa_1', weight: 3.5 },
+      { spot: 'ps5_sofa_2', weight: 3 }, { spot: 'meditation_1', weight: 2.5 },
+      { spot: 'meditation_2', weight: 2.5 }, { spot: 'sleep_pod_1', weight: 1.5 },
+      { spot: 'sleep_pod_2', weight: 1.5 }, { spot: 'sunken_tatami_1', weight: 3 },
+      { spot: 'sunken_tatami_2', weight: 3 }, { spot: 'meeting_1', weight: 1.5 },
+      { spot: 'meeting_2', weight: 1.5 }, { spot: 'sky_garden_1', weight: 2.5 },
+      { spot: 'sky_garden_2', weight: 2.5 }, { spot: 'outdoor_hallway', weight: 2 },
+      { spot: 'reception_desk', weight: 1.5 }, { spot: 'storage_rack', weight: 1.5 }
     ];
 
     // Status spot yang sedang diduduki: spotName -> personaId
@@ -45,12 +38,12 @@ export class IdleManager {
   initInitialSpots(workingPersonaId = null) {
     // Alokasi spot santai awal untuk karakter idle
     const defaultIdleAssignments = {
-      greg: 'lounge_1',
-      betty: 'tv',
+      greg: 'executive_sofa',
+      betty: 'meditation_1',
       windry: 'coffee',
-      alex: 'lounge_2',
+      alex: 'outdoor_hallway',
       codex: 'ps5_sofa_1',
-      hermes: 'lounge_3',
+      hermes: 'pantry_bar',
     };
 
     // Stagger timer awal agar karakter tidak bergerak serempak di detik 0
@@ -67,7 +60,7 @@ export class IdleManager {
       if (id === workingPersonaId || char.isWorking) {
         continue; // Persona sedang kerja di mejanya
       }
-      const spotName = defaultIdleAssignments[id] || 'lounge_1';
+      const spotName = defaultIdleAssignments[id] || 'sunken_tatami_1';
       this.occupySpot(spotName, id);
       char.spawnAt(spotName);
       this.personaTimers.set(id, initialStaggers[id] || 12);

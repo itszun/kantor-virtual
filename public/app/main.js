@@ -66,29 +66,29 @@ async function startApp() {
   const scene = new OfficeScene(canvasEl, cssContainerEl, office);
 
   // 5. Inisialisasi Karakter Persona dengan Spawn Spot Awal:
-  // Pada mode demo: Alex di meja kerja, yang lain di santai.
-  // Pada mode live: SEMUA mulai di spot santai (lounge/tv/coffee). Posisi kerja diatur oleh snapshot.
+  // Pada mode demo: Alex di meja kerja, yang lain di zona santai v6.
+  // Pada mode live: semua mulai di spot santai; posisi kerja diatur oleh snapshot.
   const initialSpots = isDemo
     ? {
         alex: 'desk_alex',
-        greg: 'lounge_1',
-        betty: 'tv',
+        greg: 'executive_sofa',
+        betty: 'meditation_1',
         windry: 'coffee',
         codex: 'desk_codex',
         hermes: 'desk_hermes',
       }
     : {
-        alex: 'lounge_2',
-        greg: 'lounge_1',
-        betty: 'tv',
+        alex: 'outdoor_hallway',
+        greg: 'executive_sofa',
+        betty: 'meditation_1',
         windry: 'coffee',
         codex: 'ps5_sofa_1',
-        hermes: 'lounge_3',
+        hermes: 'pantry_bar',
       };
 
   const charactersMap = new Map();
   personas.forEach((p) => {
-    const startSpot = initialSpots[p.id] || 'lounge_1';
+    const startSpot = initialSpots[p.id] || 'sunken_tatami_1';
     const char = new Character(p, office, scene.scene, startSpot);
     charactersMap.set(p.id, char);
   });
@@ -122,7 +122,7 @@ async function startApp() {
 
   const updateDebugDom = () => {
     if (debugEl) {
-      debugEl.textContent = JSON.stringify(window.__kantorDebug());
+      debugEl.textContent = JSON.stringify({ characters: window.__kantorDebug(), renderer: scene.getDebugStats() });
     }
   };
   updateDebugDom();

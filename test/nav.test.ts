@@ -65,10 +65,10 @@ test('Graf waypoint dan pathfinding navigasi', async (t) => {
   });
 
   await t.test('nearestNode mencari node paling dekat dengan koordinat', () => {
-    const found = nearestNode(waypoints, [6.05, -1.82]);
+    const found = nearestNode(waypoints, [-8.05, -7.02]);
     assert.equal(found, 'desk_greg');
 
-    const foundCoffee = nearestNode(waypoints, [-7.9, -3.4]);
+    const foundCoffee = nearestNode(waypoints, [-9.35, 4.85]);
     assert.equal(foundCoffee, 'coffee');
   });
 });

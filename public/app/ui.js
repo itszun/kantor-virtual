@@ -95,19 +95,22 @@ export class UIManager {
 
     // Hanya berubah setelah karakter tiba di spotnya (arrivedSpot)
     const arrived = char?.arrivedSpot;
-    if (!arrived) return 'Santai di lounge ☕';
+    if (!arrived) return 'Santai di tatami ☕';
 
     if (arrived === 'coffee') return 'Menyeduh kopi di pantry ☕';
     if (arrived === 'tv') return 'Menonton siaran di TV 📺';
     if (arrived.startsWith('window')) return 'Melihat pemandangan kota 🏙️';
     if (arrived === 'whiteboard') return 'Memeriksa papan delegasi 📋';
-    if (arrived.startsWith('lounge_')) return 'Santai sejenak di lounge ✨';
+    if (arrived === 'executive_sofa') return 'Menerima tamu di ruang eksekutif ✨';
     if (arrived.startsWith('ps5_sofa')) return 'Bermain game di PlayStation 5 🎮';
     if (arrived.startsWith('meditation_') || arrived === 'buddha_altar') return 'Meditasi hening di altar Buddha 🧘';
     if (arrived.startsWith('sunken_tatami')) return 'Duduk santai di sunken tatami 🍵';
     if (arrived === 'reception_desk') return 'Menyambut di meja lobi 🌸';
     if (arrived === 'storage_rack') return 'Memeriksa kapasitas memori di gudang 📦';
-    if (arrived === 'atelier_agy') return 'Melukis di Art Atelier (agy) 🎨';
+    if (arrived.startsWith('sleep_pod')) return 'Memulihkan energi di sleeping pod 🌙';
+    if (arrived.startsWith('meeting_')) return 'Berdiskusi di ruang rapat 💬';
+    if (arrived.startsWith('sky_garden') || arrived === 'outdoor_hallway') return 'Menikmati Sky Garden 🌿';
+    if (arrived.startsWith('pantry_')) return 'Menyiapkan kopi di pantry ☕';
     if (arrived.startsWith('desk_')) return 'Duduk santai di meja 🪑';
     return 'Santai di kantor ☕';
   }

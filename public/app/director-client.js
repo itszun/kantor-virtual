@@ -60,7 +60,7 @@ export class DirectorClient {
           this.scene.setDeskMonitor(char.deskSpot, false);
           char.say('Tugas selesai! Istirahat sejenak ☕', 4000);
 
-          const freeSpot = this.idleManager.pickNextSpot(char.deskSpot) || 'lounge_1';
+          const freeSpot = this.idleManager.pickNextSpot(char.deskSpot) || 'sunken_tatami_1';
           this.idleManager.moveToSpot(char, freeSpot);
         } else {
           char.isWorking = false;

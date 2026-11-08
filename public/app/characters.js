@@ -119,7 +119,8 @@ export class Character {
       this.group.rotation.y = spotData.facing || 0;
       if (
         spotName.startsWith('desk_') ||
-        spotName.startsWith('lounge_') ||
+        spotName.startsWith('meeting_') ||
+        spotName.startsWith('executive_sofa') ||
         spotName.startsWith('ps5_sofa') ||
         spotName.startsWith('sunken_tatami') ||
         spotName.startsWith('meditation_')
@@ -136,7 +137,7 @@ export class Character {
     if (this.id === 'betty') return 'Admin';
     if (this.id === 'alex') return 'Teknis';
     if (this.id === 'windry') return 'Taktis';
-    if (this.id === 'codex') return 'Reviewer';
+    if (this.id === 'codex') return '3D';
     if (this.id === 'hermes') return 'Dispatcher';
     return this.role;
   }
@@ -308,7 +309,8 @@ export class Character {
         if (
           spot &&
           (spot.startsWith('desk_') ||
-            spot.startsWith('lounge_') ||
+            spot.startsWith('meeting_') ||
+            spot.startsWith('executive_sofa') ||
             spot.startsWith('ps5_sofa') ||
             spot.startsWith('sunken_tatami') ||
             spot.startsWith('meditation_'))

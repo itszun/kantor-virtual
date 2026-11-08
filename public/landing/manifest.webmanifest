@@ -1,0 +1,31 @@
+{
+  "name": "Kantor Weiwu",
+  "short_name": "Kantor",
+  "description": "Kantor virtual 3D tim AI Weiwu",
+  "start_url": "/office",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#2b1d14",
+  "theme_color": "#f2a541",
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/landing/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/landing/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/landing/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

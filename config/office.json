@@ -1,179 +1,1324 @@
 {
-  "room": {
-    "width": 22,
-    "depth": 13,
-    "wallHeight": 4.5
+  "layout": "v6",
+  "grid": {
+    "cols": [
+      "W",
+      "C",
+      "E"
+    ],
+    "rows": [
+      "N",
+      "M",
+      "S"
+    ],
+    "cell": [
+      8,
+      6
+    ],
+    "origin": [
+      -12,
+      -9
+    ]
   },
+  "room": {
+    "width": 24,
+    "depth": 18,
+    "wallHeight": 2.4
+  },
+  "zones": [
+    {
+      "id": "executive",
+      "label": "Ruang Eksekutif",
+      "cell": "NW",
+      "floor": "carpet",
+      "doors": [
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "lobby",
+      "label": "Lobi Utama",
+      "cell": "N",
+      "floor": "wood",
+      "doors": [
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "meditation",
+      "label": "Meditasi & Sleeping Pod",
+      "cell": "NE",
+      "floor": "tatami",
+      "doors": [
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "game_ram",
+      "label": "Game Room & RAM Depot",
+      "cell": "W",
+      "floor": "tile",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 2.6,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "tatami",
+      "label": "Sunken Tatami",
+      "cell": "C",
+      "floor": "tatami",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "workroom",
+      "label": "Work Room",
+      "cell": "E",
+      "floor": "wood",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "S",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "pantry",
+      "label": "Pantry",
+      "cell": "SW",
+      "floor": "tile",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 2.6,
+          "width": 1.6
+        },
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "meeting",
+      "label": "Ruang Rapat",
+      "cell": "S",
+      "floor": "carpet",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "E",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    },
+    {
+      "id": "balcony",
+      "label": "Balkon Garden",
+      "cell": "SE",
+      "floor": "deck",
+      "doors": [
+        {
+          "side": "N",
+          "offset": 0,
+          "width": 1.6
+        },
+        {
+          "side": "W",
+          "offset": 0,
+          "width": 1.6
+        }
+      ]
+    }
+  ],
   "spots": {
-    "desk_greg": { "pos": [6, -1.8], "facing": 3.14159 },
-    "desk_betty": { "pos": [2, -1.8], "facing": 3.14159 },
-    "desk_alex": { "pos": [2, 1.3], "facing": 0 },
-    "desk_windry": { "pos": [6, 1.3], "facing": 0 },
-    "desk_codex": { "pos": [9, 1.3], "facing": 0 },
-    "atelier_agy": { "pos": [9, 1.3], "facing": 0 },
-    "desk_hermes": { "pos": [-0.5, -1.8], "facing": 3.14159 },
-    "lounge_1": { "pos": [-7.2, 0], "facing": 0 },
-    "lounge_2": { "pos": [-2.8, 0], "facing": 3.14159 },
-    "lounge_3": { "pos": [-5, -2], "facing": 1.5708 },
-    "lounge_4": { "pos": [-5, 2], "facing": -1.5708 },
-    "coffee": { "pos": [-8, -3.5], "facing": -1.5708 },
-    "tv": { "pos": [-5, -4], "facing": -1.5708 },
-    "window_1": { "pos": [-2, -4.5], "facing": -1.5708 },
-    "window_2": { "pos": [8, -4.5], "facing": -1.5708 },
-    "whiteboard": { "pos": [4, -4.5], "facing": -1.5708 },
-    "door": { "pos": [-1, 4.5], "facing": -1.5708 },
-    "buddha_altar": { "pos": [-8, 4.5], "facing": -1.5708 },
-    "meditation_1": { "pos": [-7.2, 3.5], "facing": 3.14159 },
-    "meditation_2": { "pos": [-8.8, 3.5], "facing": 0 },
-    "ps5_sofa_1": { "pos": [-5, 3.5], "facing": -1.5708 },
-    "ps5_sofa_2": { "pos": [-3.5, 3.5], "facing": -1.5708 },
-    "reception_desk": { "pos": [0, 4.5], "facing": -1.5708 },
-    "sunken_tatami_1": { "pos": [2.5, 4.2], "facing": 1.5708 },
-    "sunken_tatami_2": { "pos": [4.5, 4.2], "facing": -1.5708 },
-    "storage_rack": { "pos": [8.5, -3.5], "facing": -1.5708 }
+    "desk_greg": {
+      "zone": "executive",
+      "pos": [
+        -8,
+        -8.2
+      ],
+      "facing": 0
+    },
+    "executive_sofa": {
+      "zone": "executive",
+      "pos": [
+        -9,
+        -4.6
+      ],
+      "facing": 1.57
+    },
+    "desk_hermes": {
+      "zone": "lobby",
+      "pos": [
+        0,
+        -5.8
+      ],
+      "facing": 3.14
+    },
+    "reception_desk": {
+      "zone": "lobby",
+      "pos": [
+        -1.6,
+        -6.6
+      ],
+      "facing": 3.14
+    },
+    "door": {
+      "zone": "lobby",
+      "pos": [
+        0,
+        -8.35
+      ],
+      "facing": 0
+    },
+    "buddha_altar": {
+      "zone": "meditation",
+      "pos": [
+        8,
+        -7.2
+      ],
+      "facing": 0
+    },
+    "meditation_1": {
+      "zone": "meditation",
+      "pos": [
+        6.5,
+        -6
+      ],
+      "facing": 0
+    },
+    "meditation_2": {
+      "zone": "meditation",
+      "pos": [
+        9.5,
+        -6
+      ],
+      "facing": 0
+    },
+    "sleep_pod_1": {
+      "zone": "meditation",
+      "pos": [
+        5.6,
+        -4.5
+      ],
+      "facing": 1.57
+    },
+    "sleep_pod_2": {
+      "zone": "meditation",
+      "pos": [
+        10.4,
+        -4.5
+      ],
+      "facing": -1.57
+    },
+    "tv": {
+      "zone": "game_ram",
+      "pos": [
+        -10,
+        -1.8
+      ],
+      "facing": 1.57
+    },
+    "ps5_sofa_1": {
+      "zone": "game_ram",
+      "pos": [
+        -8.8,
+        0.7
+      ],
+      "facing": 3.14
+    },
+    "ps5_sofa_2": {
+      "zone": "game_ram",
+      "pos": [
+        -6.4,
+        0.7
+      ],
+      "facing": 3.14
+    },
+    "storage_rack": {
+      "zone": "game_ram",
+      "pos": [
+        -10,
+        0.3
+      ],
+      "facing": 1.57
+    },
+    "sunken_tatami_1": {
+      "zone": "tatami",
+      "pos": [
+        -1.4,
+        -0.8
+      ],
+      "facing": 0
+    },
+    "sunken_tatami_2": {
+      "zone": "tatami",
+      "pos": [
+        1.4,
+        -0.8
+      ],
+      "facing": 0
+    },
+    "desk_betty": {
+      "zone": "workroom",
+      "pos": [
+        6.1,
+        -1.3
+      ],
+      "facing": 3.14
+    },
+    "desk_alex": {
+      "zone": "workroom",
+      "pos": [
+        9.4,
+        -1.3
+      ],
+      "facing": 3.14
+    },
+    "desk_windry": {
+      "zone": "workroom",
+      "pos": [
+        6.1,
+        1.3
+      ],
+      "facing": 0
+    },
+    "desk_codex": {
+      "zone": "workroom",
+      "pos": [
+        9.4,
+        1.3
+      ],
+      "facing": 0
+    },
+    "whiteboard": {
+      "zone": "workroom",
+      "pos": [
+        10.5,
+        0
+      ],
+      "facing": -1.57
+    },
+    "coffee": {
+      "zone": "pantry",
+      "pos": [
+        -9.4,
+        4.8
+      ],
+      "facing": 1.57
+    },
+    "pantry_bar": {
+      "zone": "pantry",
+      "pos": [
+        -7,
+        7
+      ],
+      "facing": 0
+    },
+    "pantry_espresso": {
+      "zone": "pantry",
+      "pos": [
+        -10,
+        7.2
+      ],
+      "facing": 0
+    },
+    "meeting_1": {
+      "zone": "meeting",
+      "pos": [
+        -2.3,
+        4.7
+      ],
+      "facing": 0
+    },
+    "meeting_2": {
+      "zone": "meeting",
+      "pos": [
+        2.3,
+        4.7
+      ],
+      "facing": 0
+    },
+    "meeting_3": {
+      "zone": "meeting",
+      "pos": [
+        -2.3,
+        7.5
+      ],
+      "facing": 3.14
+    },
+    "meeting_4": {
+      "zone": "meeting",
+      "pos": [
+        2.3,
+        7.5
+      ],
+      "facing": 3.14
+    },
+    "sky_garden_1": {
+      "zone": "balcony",
+      "pos": [
+        6,
+        7.3
+      ],
+      "facing": 0
+    },
+    "sky_garden_2": {
+      "zone": "balcony",
+      "pos": [
+        10,
+        7.3
+      ],
+      "facing": 0
+    },
+    "outdoor_hallway": {
+      "zone": "balcony",
+      "pos": [
+        8,
+        4.6
+      ],
+      "facing": 0
+    }
   },
   "waypoints": {
     "nodes": {
-      "desk_greg": [6, -1.8],
-      "desk_betty": [2, -1.8],
-      "desk_alex": [2, 1.3],
-      "desk_windry": [6, 1.3],
-      "desk_codex": [9, 1.3],
-      "atelier_agy": [9, 1.3],
-      "desk_hermes": [-0.5, -1.8],
-      "lounge_1": [-7.2, 0],
-      "lounge_2": [-2.8, 0],
-      "lounge_3": [-5, -2],
-      "lounge_4": [-5, 2],
-      "coffee": [-8, -3.5],
-      "tv": [-5, -4],
-      "window_1": [-2, -4.5],
-      "window_2": [8, -4.5],
-      "whiteboard": [4, -4.5],
-      "door": [-1, 4.5],
-      "buddha_altar": [-8, 4.5],
-      "meditation_1": [-7.2, 3.5],
-      "meditation_2": [-8.8, 3.5],
-      "ps5_sofa_1": [-5, 3.5],
-      "ps5_sofa_2": [-3.5, 3.5],
-      "reception_desk": [0, 4.5],
-      "sunken_tatami_1": [2.5, 4.2],
-      "sunken_tatami_2": [4.5, 4.2],
-      "storage_rack": [8.5, -3.5],
-      "n_center": [0, 0],
-      "n_corridor_north": [0, -3.8],
-      "n_corridor_south": [0, 3.5],
-      "n_hall_pantry": [-8, -1.5],
-      "n_hall_tv": [-5, -3],
-      "n_lounge_walk_w": [-7.2, 2],
-      "n_lounge_walk_e": [-2.8, 2],
-      "n_desks_center": [4, 0],
-      "n_desks_aisle_w": [2, 0],
-      "n_desks_aisle_e": [6, 0],
-      "n_desks_north_aisle": [4, -3.8],
-      "n_window_2_aisle": [8, -3.8],
-      "n_atelier_aisle": [9, 0],
-      "n_storage_aisle": [8.5, -2]
+      "executive_center": [
+        -7.2,
+        -5.6
+      ],
+      "lobby_center": [
+        0,
+        -6
+      ],
+      "meditation_center": [
+        8,
+        -6
+      ],
+      "game_ram_center": [
+        -8,
+        0
+      ],
+      "tatami_center": [
+        0,
+        0
+      ],
+      "workroom_center": [
+        8,
+        0
+      ],
+      "pantry_center": [
+        -8,
+        6
+      ],
+      "meeting_center": [
+        0,
+        4.2
+      ],
+      "balcony_center": [
+        8,
+        6
+      ],
+      "desk_greg": [
+        -8,
+        -8.2
+      ],
+      "executive_sofa": [
+        -9,
+        -4.6
+      ],
+      "desk_hermes": [
+        0,
+        -5.8
+      ],
+      "reception_desk": [
+        -1.6,
+        -6.6
+      ],
+      "door": [
+        0,
+        -8.35
+      ],
+      "buddha_altar": [
+        8,
+        -7.2
+      ],
+      "meditation_1": [
+        6.5,
+        -6
+      ],
+      "meditation_2": [
+        9.5,
+        -6
+      ],
+      "sleep_pod_1": [
+        5.6,
+        -4.5
+      ],
+      "sleep_pod_2": [
+        10.4,
+        -4.5
+      ],
+      "tv": [
+        -10,
+        -1.8
+      ],
+      "ps5_sofa_1": [
+        -8.8,
+        0.7
+      ],
+      "ps5_sofa_2": [
+        -6.4,
+        0.7
+      ],
+      "storage_rack": [
+        -10,
+        0.3
+      ],
+      "sunken_tatami_1": [
+        -1.4,
+        -0.8
+      ],
+      "sunken_tatami_2": [
+        1.4,
+        -0.8
+      ],
+      "desk_betty": [
+        6.1,
+        -1.3
+      ],
+      "desk_alex": [
+        9.4,
+        -1.3
+      ],
+      "desk_windry": [
+        6.1,
+        1.3
+      ],
+      "desk_codex": [
+        9.4,
+        1.3
+      ],
+      "whiteboard": [
+        10.5,
+        0
+      ],
+      "coffee": [
+        -9.4,
+        4.8
+      ],
+      "pantry_bar": [
+        -7,
+        7
+      ],
+      "pantry_espresso": [
+        -10,
+        7.2
+      ],
+      "meeting_1": [
+        -2.3,
+        4.7
+      ],
+      "meeting_2": [
+        2.3,
+        4.7
+      ],
+      "meeting_3": [
+        -2.3,
+        7.5
+      ],
+      "meeting_4": [
+        2.3,
+        7.5
+      ],
+      "sky_garden_1": [
+        6,
+        7.3
+      ],
+      "sky_garden_2": [
+        10,
+        7.3
+      ],
+      "outdoor_hallway": [
+        8,
+        4.6
+      ],
+      "game_ram_east": [
+        -5.4,
+        0.4
+      ],
+      "pantry_north": [
+        -5.4,
+        4.2
+      ],
+      "meeting_west": [
+        -3,
+        6
+      ],
+      "meeting_east": [
+        3,
+        6
+      ],
+      "tatami_e": [
+        1.5,
+        0
+      ],
+      "tatami_se": [
+        1.5,
+        2.4
+      ],
+      "tatami_s": [
+        0,
+        2.4
+      ],
+      "meeting_nw": [
+        -3,
+        4.2
+      ],
+      "meeting_ne": [
+        3,
+        4.2
+      ],
+      "exec_nw": [
+        -10,
+        -8.2
+      ],
+      "exec_w": [
+        -10,
+        -5.6
+      ]
     },
     "edges": [
-      ["n_center", "desk_hermes"],
-      ["n_center", "n_corridor_north"],
-      ["n_center", "n_corridor_south"],
-      ["n_center", "n_desks_aisle_w"],
-      ["n_center", "lounge_2"],
-      ["n_corridor_south", "door"],
-      ["n_corridor_south", "n_lounge_walk_e"],
-      ["n_corridor_south", "reception_desk"],
-      ["n_corridor_south", "ps5_sofa_2"],
-      ["n_corridor_south", "sunken_tatami_1"],
-      ["reception_desk", "door"],
-      ["reception_desk", "sunken_tatami_1"],
-      ["sunken_tatami_1", "sunken_tatami_2"],
-      ["ps5_sofa_2", "ps5_sofa_1"],
-      ["ps5_sofa_1", "meditation_1"],
-      ["meditation_1", "meditation_2"],
-      ["meditation_1", "buddha_altar"],
-      ["meditation_2", "buddha_altar"],
-      ["n_lounge_walk_e", "lounge_4"],
-      ["n_lounge_walk_w", "lounge_4"],
-      ["n_lounge_walk_w", "lounge_1"],
-      ["lounge_1", "n_hall_pantry"],
-      ["n_hall_pantry", "coffee"],
-      ["coffee", "tv"],
-      ["tv", "n_hall_tv"],
-      ["n_hall_tv", "lounge_3"],
-      ["lounge_3", "n_corridor_north"],
-      ["tv", "n_corridor_north"],
-      ["n_corridor_north", "window_1"],
-      ["n_corridor_north", "whiteboard"],
-      ["whiteboard", "n_desks_north_aisle"],
-      ["n_desks_north_aisle", "window_2"],
-      ["window_2", "n_window_2_aisle"],
-      ["n_window_2_aisle", "desk_greg"],
-      ["n_window_2_aisle", "n_storage_aisle"],
-      ["n_storage_aisle", "storage_rack"],
-      ["n_desks_aisle_w", "desk_betty"],
-      ["n_desks_aisle_w", "desk_alex"],
-      ["n_desks_aisle_w", "n_desks_center"],
-      ["n_desks_center", "n_desks_aisle_e"],
-      ["n_desks_aisle_e", "desk_greg"],
-      ["n_desks_aisle_e", "desk_windry"],
-      ["n_desks_aisle_e", "n_atelier_aisle"],
-      ["n_atelier_aisle", "desk_codex"],
-      ["desk_codex", "atelier_agy"],
-      ["n_desks_north_aisle", "desk_betty"],
-      ["n_desks_north_aisle", "desk_greg"]
+      [
+        "executive_center",
+        "lobby_center"
+      ],
+      [
+        "lobby_center",
+        "meditation_center"
+      ],
+      [
+        "executive_center",
+        "game_ram_center"
+      ],
+      [
+        "lobby_center",
+        "tatami_center"
+      ],
+      [
+        "meditation_center",
+        "workroom_center"
+      ],
+      [
+        "game_ram_center",
+        "tatami_center"
+      ],
+      [
+        "tatami_center",
+        "workroom_center"
+      ],
+      [
+        "game_ram_center",
+        "game_ram_east"
+      ],
+      [
+        "game_ram_east",
+        "pantry_north"
+      ],
+      [
+        "pantry_north",
+        "pantry_center"
+      ],
+      [
+        "tatami_center",
+        "tatami_e"
+      ],
+      [
+        "tatami_e",
+        "tatami_se"
+      ],
+      [
+        "tatami_se",
+        "tatami_s"
+      ],
+      [
+        "tatami_s",
+        "meeting_center"
+      ],
+      [
+        "workroom_center",
+        "balcony_center"
+      ],
+      [
+        "pantry_center",
+        "meeting_west"
+      ],
+      [
+        "meeting_west",
+        "meeting_nw"
+      ],
+      [
+        "meeting_nw",
+        "meeting_center"
+      ],
+      [
+        "meeting_center",
+        "meeting_ne"
+      ],
+      [
+        "meeting_ne",
+        "meeting_east"
+      ],
+      [
+        "meeting_east",
+        "balcony_center"
+      ],
+      [
+        "desk_greg",
+        "exec_nw"
+      ],
+      [
+        "exec_nw",
+        "exec_w"
+      ],
+      [
+        "exec_w",
+        "executive_center"
+      ],
+      [
+        "executive_sofa",
+        "executive_center"
+      ],
+      [
+        "desk_hermes",
+        "lobby_center"
+      ],
+      [
+        "reception_desk",
+        "lobby_center"
+      ],
+      [
+        "door",
+        "lobby_center"
+      ],
+      [
+        "buddha_altar",
+        "meditation_center"
+      ],
+      [
+        "meditation_1",
+        "meditation_center"
+      ],
+      [
+        "meditation_2",
+        "meditation_center"
+      ],
+      [
+        "sleep_pod_1",
+        "meditation_center"
+      ],
+      [
+        "sleep_pod_2",
+        "meditation_center"
+      ],
+      [
+        "tv",
+        "game_ram_center"
+      ],
+      [
+        "ps5_sofa_1",
+        "game_ram_center"
+      ],
+      [
+        "ps5_sofa_2",
+        "game_ram_center"
+      ],
+      [
+        "storage_rack",
+        "game_ram_center"
+      ],
+      [
+        "sunken_tatami_1",
+        "tatami_center"
+      ],
+      [
+        "sunken_tatami_2",
+        "tatami_center"
+      ],
+      [
+        "desk_betty",
+        "workroom_center"
+      ],
+      [
+        "desk_alex",
+        "workroom_center"
+      ],
+      [
+        "desk_windry",
+        "workroom_center"
+      ],
+      [
+        "desk_codex",
+        "workroom_center"
+      ],
+      [
+        "whiteboard",
+        "workroom_center"
+      ],
+      [
+        "coffee",
+        "pantry_center"
+      ],
+      [
+        "pantry_bar",
+        "pantry_center"
+      ],
+      [
+        "pantry_espresso",
+        "pantry_center"
+      ],
+      [
+        "meeting_1",
+        "meeting_center"
+      ],
+      [
+        "meeting_2",
+        "meeting_center"
+      ],
+      [
+        "meeting_3",
+        "meeting_west"
+      ],
+      [
+        "meeting_4",
+        "meeting_east"
+      ],
+      [
+        "sky_garden_1",
+        "balcony_center"
+      ],
+      [
+        "sky_garden_2",
+        "balcony_center"
+      ],
+      [
+        "outdoor_hallway",
+        "balcony_center"
+      ]
     ]
   },
   "furniture": [
-    { "type": "desk", "pos": [2, 0.35, -3], "size": [2.2, 0.7, 1.2] },
-    { "type": "desk", "pos": [6, 0.35, -3], "size": [2.2, 0.7, 1.2] },
-    { "type": "desk", "pos": [2, 0.35, 2.5], "size": [2.2, 0.7, 1.2] },
-    { "type": "desk", "pos": [6, 0.35, 2.5], "size": [2.2, 0.7, 1.2] },
-    { "type": "desk", "pos": [9, 0.35, 2.5], "size": [2.2, 0.7, 1.2] },
-    { "type": "chair", "pos": [2, 0.3, -1.8], "rot": [0, 3.14159, 0] },
-    { "type": "chair", "pos": [6, 0.3, -1.8], "rot": [0, 3.14159, 0] },
-    { "type": "chair", "pos": [2, 0.3, 1.3], "rot": [0, 0, 0] },
-    { "type": "chair", "pos": [6, 0.3, 1.3], "rot": [0, 0, 0] },
-    { "type": "chair", "pos": [9, 0.3, 1.3], "rot": [0, 0, 0] },
-    { "type": "monitor", "pos": [1.6, 0.85, -3.1], "rot": [0, 0.1, 0], "target": "desk_betty" },
-    { "type": "monitor", "pos": [2.4, 0.85, -3.1], "rot": [0, -0.1, 0], "target": "desk_betty" },
-    { "type": "monitor", "pos": [5.6, 0.85, -3.1], "rot": [0, 0.1, 0], "target": "desk_greg" },
-    { "type": "monitor", "pos": [6.4, 0.85, -3.1], "rot": [0, -0.1, 0], "target": "desk_greg" },
-    { "type": "monitor", "pos": [1.6, 0.85, 2.6], "rot": [0, 3.04, 0], "target": "desk_alex" },
-    { "type": "monitor", "pos": [2.4, 0.85, 2.6], "rot": [0, -3.04, 0], "target": "desk_alex" },
-    { "type": "monitor", "pos": [5.6, 0.85, 2.6], "rot": [0, 3.04, 0], "target": "desk_windry" },
-    { "type": "monitor", "pos": [6.4, 0.85, 2.6], "rot": [0, -3.04, 0], "target": "desk_windry" },
-    { "type": "monitor", "pos": [9.0, 0.85, 2.6], "rot": [0, 3.14, 0], "target": "desk_codex" },
-    { "type": "art_easel", "pos": [9.4, 0, 0.3], "rot": [0, -0.4, 0] },
-    { "type": "carpet", "pos": [-5, 0.01, 0], "radius": 2.4 },
-    { "type": "coffee_table", "pos": [-5, 0.25, 0], "radius": 0.85 },
-    { "type": "sofa", "pos": [-7.2, 0.35, 0], "rot": [0, 1.5708, 0] },
-    { "type": "sofa", "pos": [-2.8, 0.35, 0], "rot": [0, -1.5708, 0] },
-    { "type": "sofa", "pos": [-5, 0.35, -2], "rot": [0, 0, 0] },
-    { "type": "sofa", "pos": [-5, 0.35, 2], "rot": [0, 3.14159, 0] },
-    { "type": "coffee_counter", "pos": [-8, 0.5, -4.8], "size": [2.6, 1, 1.2] },
-    { "type": "coffee_machine", "pos": [-8, 1.15, -4.8], "size": [0.6, 0.5, 0.5] },
-    { "type": "tv_wall", "pos": [-5, 2.5, -5.9], "size": [2.4, 1.4, 0.1] },
-    { "type": "whiteboard", "pos": [4, 2.2, -5.9], "size": [2.4, 1.4, 0.08], "id": "wb_delegation", "title": "Delegasi terbaru" },
-    { "type": "whiteboard", "pos": [-0.5, 2.2, -5.9], "size": [2.0, 1.4, 0.08], "id": "wb_greg", "title": "Tugas Greg" },
-    { "type": "window", "pos": [-2, 2.4, -5.95], "size": [2.2, 2.0, 0.1] },
-    { "type": "window", "pos": [8, 2.4, -5.95], "size": [2.2, 2.0, 0.1] },
-    { "type": "buddha_altar", "pos": [-8, 0, 5.0], "rot": [0, 0, 0] },
-    { "type": "meditation_cushion", "pos": [-7.2, 0.05, 3.5] },
-    { "type": "meditation_cushion", "pos": [-8.8, 0.05, 3.5] },
-    { "type": "ps5_station", "pos": [-4.2, 0, 5.2], "rot": [0, 0, 0] },
-    { "type": "sofa", "pos": [-4.2, 0.35, 3.5], "rot": [0, 3.14159, 0] },
-    { "type": "reception_counter", "pos": [0, 0, 5.0], "size": [2.2, 1.1, 0.8] },
-    { "type": "shoe_rack", "pos": [-1.8, 0.5, 5.2], "size": [1.0, 1.2, 0.5] },
-    { "type": "sunken_tatami", "pos": [3.5, 0.02, 4.2], "size": [3.4, 0.15, 2.2] },
-    { "type": "storage_shelves", "pos": [8.5, 0, -4.8], "size": [2.4, 2.4, 1.0] },
-    { "type": "hermes_console", "pos": [-0.5, 0, -2.8] },
-    { "type": "chair", "pos": [-0.5, 0.3, -1.8], "rot": [0, 3.14159, 0] },
-    { "type": "plant", "pos": [-9.5, 0, -2.5] },
-    { "type": "plant", "pos": [-9.5, 0, 2] },
-    { "type": "plant", "pos": [10, 0, -4.8] },
-    { "type": "plant", "pos": [10, 0, 4] },
-    { "type": "plant", "pos": [0, 0, -5.2] }
+    {
+      "type": "executive_desk",
+      "zone": "executive",
+      "pos": [
+        -8,
+        0,
+        -6.9
+      ],
+      "size": [
+        2.8,
+        0.8,
+        1.2
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "sofa",
+      "zone": "executive",
+      "pos": [
+        -9.4,
+        0,
+        -4.6
+      ],
+      "size": [
+        1.8,
+        0.7,
+        0.7
+      ],
+      "rot": 1.57,
+      "solid": true
+    },
+    {
+      "type": "reception_counter",
+      "zone": "lobby",
+      "pos": [
+        -1.6,
+        0,
+        -7.6
+      ],
+      "size": [
+        2.6,
+        1.1,
+        0.8
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "lift_door",
+      "zone": "lobby",
+      "pos": [
+        0,
+        0,
+        -8.88
+      ],
+      "size": [
+        2.2,
+        2.1,
+        0.15
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "koi_aquarium",
+      "zone": "lobby",
+      "pos": [
+        2.5,
+        0,
+        -7.2
+      ],
+      "size": [
+        1.8,
+        1.1,
+        0.6
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "altar",
+      "zone": "meditation",
+      "pos": [
+        8,
+        0,
+        -8
+      ],
+      "size": [
+        1.8,
+        1.5,
+        0.7
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "sleep_pod",
+      "zone": "meditation",
+      "pos": [
+        5.4,
+        0,
+        -4.5
+      ],
+      "size": [
+        1.8,
+        1.4,
+        2.4
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "sleep_pod",
+      "zone": "meditation",
+      "pos": [
+        10.6,
+        0,
+        -4.5
+      ],
+      "size": [
+        1.8,
+        1.4,
+        2.4
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "tv_console",
+      "zone": "game_ram",
+      "pos": [
+        -10,
+        0,
+        -2.5
+      ],
+      "size": [
+        2.1,
+        1.2,
+        0.5
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "sofa",
+      "zone": "game_ram",
+      "pos": [
+        -8,
+        0,
+        1.6
+      ],
+      "size": [
+        3.2,
+        0.7,
+        0.8
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "storage_shelves",
+      "zone": "game_ram",
+      "pos": [
+        -11,
+        0,
+        1.2
+      ],
+      "size": [
+        0.8,
+        2.1,
+        3.2
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "sunken_tatami",
+      "zone": "tatami",
+      "pos": [
+        0,
+        -0.2,
+        0.8
+      ],
+      "size": [
+        5.8,
+        0.25,
+        4.1
+      ],
+      "rot": 0,
+      "solid": false
+    },
+    {
+      "type": "low_table",
+      "zone": "tatami",
+      "pos": [
+        0,
+        0,
+        0.8
+      ],
+      "size": [
+        1.5,
+        0.4,
+        1
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "desk",
+      "zone": "workroom",
+      "pos": [
+        6.1,
+        0,
+        -2.2
+      ],
+      "size": [
+        1.8,
+        0.75,
+        0.8
+      ],
+      "rot": 0,
+      "solid": true,
+      "target": "desk_betty"
+    },
+    {
+      "type": "desk",
+      "zone": "workroom",
+      "pos": [
+        9.4,
+        0,
+        -2.2
+      ],
+      "size": [
+        1.8,
+        0.75,
+        0.8
+      ],
+      "rot": 0,
+      "solid": true,
+      "target": "desk_alex"
+    },
+    {
+      "type": "desk",
+      "zone": "workroom",
+      "pos": [
+        6.1,
+        0,
+        2.2
+      ],
+      "size": [
+        1.8,
+        0.75,
+        0.8
+      ],
+      "rot": 3.14,
+      "solid": true,
+      "target": "desk_windry"
+    },
+    {
+      "type": "desk",
+      "zone": "workroom",
+      "pos": [
+        9.4,
+        0,
+        2.2
+      ],
+      "size": [
+        1.8,
+        0.75,
+        0.8
+      ],
+      "rot": 3.14,
+      "solid": true,
+      "target": "desk_codex"
+    },
+    {
+      "type": "whiteboard",
+      "zone": "workroom",
+      "pos": [
+        11.7,
+        1.7,
+        -1.35
+      ],
+      "size": [
+        0.1,
+        1.4,
+        1.7
+      ],
+      "rot": 1.57,
+      "solid": true,
+      "id": "wb_greg",
+      "title": "Tugas Greg"
+    },
+    {
+      "type": "whiteboard",
+      "zone": "workroom",
+      "pos": [
+        11.7,
+        1.7,
+        1.35
+      ],
+      "size": [
+        0.1,
+        1.4,
+        1.7
+      ],
+      "rot": 1.57,
+      "solid": true,
+      "id": "wb_delegation",
+      "title": "Delegasi terbaru"
+    },
+    {
+      "type": "pantry_counter",
+      "zone": "pantry",
+      "pos": [
+        -10,
+        0,
+        7.5
+      ],
+      "size": [
+        2.5,
+        1,
+        0.7
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "fridge_sink",
+      "zone": "pantry",
+      "pos": [
+        -5.9,
+        0,
+        7.5
+      ],
+      "size": [
+        1.3,
+        1.8,
+        0.7
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "meeting_table",
+      "zone": "meeting",
+      "pos": [
+        0,
+        0,
+        6.2
+      ],
+      "size": [
+        3.6,
+        0.75,
+        1.5
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "presentation_screen",
+      "zone": "meeting",
+      "pos": [
+        0,
+        1.8,
+        8.82
+      ],
+      "size": [
+        2.7,
+        1.5,
+        0.1
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "planter",
+      "zone": "balcony",
+      "pos": [
+        5.2,
+        0,
+        8.1
+      ],
+      "size": [
+        2.1,
+        0.7,
+        0.6
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "planter",
+      "zone": "balcony",
+      "pos": [
+        10.8,
+        0,
+        8.1
+      ],
+      "size": [
+        2.1,
+        0.7,
+        0.6
+      ],
+      "rot": 0,
+      "solid": true
+    },
+    {
+      "type": "low_fence",
+      "zone": "balcony",
+      "pos": [
+        8,
+        0,
+        8.8
+      ],
+      "size": [
+        7.8,
+        0.6,
+        0.18
+      ],
+      "rot": 0,
+      "solid": true
+    }
   ]
 }
