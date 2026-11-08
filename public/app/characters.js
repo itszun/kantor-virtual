@@ -117,7 +117,13 @@ export class Character {
     if (spotData) {
       this.group.position.set(spotData.pos[0], 0, spotData.pos[1]);
       this.group.rotation.y = spotData.facing || 0;
-      if (spotName.startsWith('desk_') || spotName.startsWith('lounge_')) {
+      if (
+        spotName.startsWith('desk_') ||
+        spotName.startsWith('lounge_') ||
+        spotName.startsWith('ps5_sofa') ||
+        spotName.startsWith('sunken_tatami') ||
+        spotName.startsWith('meditation_')
+      ) {
         this.sit();
       } else {
         this.stand();
@@ -130,6 +136,8 @@ export class Character {
     if (this.id === 'betty') return 'Admin';
     if (this.id === 'alex') return 'Teknis';
     if (this.id === 'windry') return 'Taktis';
+    if (this.id === 'codex') return 'Reviewer';
+    if (this.id === 'hermes') return 'Dispatcher';
     return this.role;
   }
 
@@ -167,6 +175,30 @@ export class Character {
       const bun = new THREE.Mesh(new THREE.SphereGeometry(0.08, 12, 12), mat);
       bun.position.set(0, 1.05, -0.16);
       hairGroup.add(bun);
+    } else if (this.id === 'codex') {
+      const mat = new THREE.MeshStandardMaterial({ color: 0x064e3b, roughness: 0.8 });
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.19, 14, 14), mat);
+      hair.position.set(0, 0.98, -0.01);
+      hair.scale.set(1.02, 0.72, 1.02);
+      hairGroup.add(hair);
+    } else if (this.id === 'hermes') {
+      const mat = new THREE.MeshStandardMaterial({ color: 0x0891b2, roughness: 0.5 });
+      const band = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.022, 8, 20), mat);
+      band.position.set(0, 0.98, 0);
+      band.rotation.x = Math.PI / 2;
+      hairGroup.add(band);
+      const earLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.05, 12), mat);
+      earLeft.position.set(-0.19, 0.94, 0);
+      earLeft.rotation.z = Math.PI / 2;
+      hairGroup.add(earLeft);
+      const earRight = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.05, 12), mat);
+      earRight.position.set(0.19, 0.94, 0);
+      earRight.rotation.z = Math.PI / 2;
+      hairGroup.add(earRight);
+      const mic = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.14, 6), mat);
+      mic.position.set(0.12, 0.88, 0.12);
+      mic.rotation.x = 0.5;
+      hairGroup.add(mic);
     }
     this.model.add(hairGroup);
   }
@@ -273,7 +305,14 @@ export class Character {
         this.arrivedSpot = spot;
         this.targetSpot = null;
 
-        if (spot && (spot.startsWith('desk_') || spot.startsWith('lounge_'))) {
+        if (
+          spot &&
+          (spot.startsWith('desk_') ||
+            spot.startsWith('lounge_') ||
+            spot.startsWith('ps5_sofa') ||
+            spot.startsWith('sunken_tatami') ||
+            spot.startsWith('meditation_'))
+        ) {
           this.sit();
         } else {
           this.stand();

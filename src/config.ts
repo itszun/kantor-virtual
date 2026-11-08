@@ -15,6 +15,16 @@ export interface Persona {
   desk_spot: string;
 }
 
+export interface DirectorConfig {
+  enabled: boolean;
+  apiKeyFile: string | null;
+  baseUrl: string;
+  model: string;
+  minIntervalMin: number;
+  dailyBudgetUsd: number;
+  maxDailyCalls: number;
+}
+
 export interface Config {
   port: number;
   dbPath: string;
@@ -28,6 +38,7 @@ export interface Config {
   scanIntervalS: number;
   scanMaxAgeDays: number;
   pricingPath: string;
+  director: DirectorConfig;
 }
 
 export function loadPersonas(personasPath: string): Persona[] {
@@ -53,6 +64,18 @@ export function loadConfig(overrides: Partial<Config> = {}): Config {
   const scanMaxAgeDays = overrides.scanMaxAgeDays ?? (process.env.KANTOR_SCAN_MAX_AGE_DAYS ? parseInt(process.env.KANTOR_SCAN_MAX_AGE_DAYS, 10) : 7);
   const pricingPath = overrides.pricingPath ?? (process.env.KANTOR_PRICING_FILE || path.join(PROJECT_ROOT, 'config', 'pricing.json'));
 
+  const director: DirectorConfig = {
+    enabled: overrides.director?.enabled ?? (process.env.KANTOR_DIRECTOR_ENABLED === 'true'),
+    apiKeyFile: overrides.director?.apiKeyFile !== undefined
+      ? overrides.director.apiKeyFile
+      : (process.env.KANTOR_DIRECTOR_KEY_FILE || path.join(PROJECT_ROOT, 'config', 'director_key')),
+    baseUrl: overrides.director?.baseUrl ?? (process.env.KANTOR_DIRECTOR_BASE_URL || 'https://api.deepseek.com/v1'),
+    model: overrides.director?.model ?? (process.env.KANTOR_DIRECTOR_MODEL || 'deepseek-chat'),
+    minIntervalMin: overrides.director?.minIntervalMin ?? (process.env.KANTOR_DIRECTOR_MIN_INTERVAL_MIN ? parseInt(process.env.KANTOR_DIRECTOR_MIN_INTERVAL_MIN, 10) : 10),
+    dailyBudgetUsd: overrides.director?.dailyBudgetUsd ?? (process.env.KANTOR_DIRECTOR_DAILY_BUDGET ? parseFloat(process.env.KANTOR_DIRECTOR_DAILY_BUDGET) : 0.05),
+    maxDailyCalls: overrides.director?.maxDailyCalls ?? (process.env.KANTOR_DIRECTOR_MAX_CALLS ? parseInt(process.env.KANTOR_DIRECTOR_MAX_CALLS, 10) : 60),
+  };
+
   return {
     port,
     dbPath,
@@ -66,6 +89,7 @@ export function loadConfig(overrides: Partial<Config> = {}): Config {
     scanIntervalS,
     scanMaxAgeDays,
     pricingPath,
+    director,
   };
 }
 

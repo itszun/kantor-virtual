@@ -16,7 +16,7 @@ test('Endpoint /api/office dan vendor /vendor/three/*', async (t) => {
     await server.closeAll();
   });
 
-  await t.test('GET /api/office 200 berisi 4 persona & semua spot desk_<id>', async () => {
+  await t.test('GET /api/office 200 berisi 5 persona & semua spot desk_<id>', async () => {
     const res = await fetch(`http://127.0.0.1:${PORT}/api/office`);
     assert.equal(res.status, 200);
     assert.match(res.headers.get('content-type') || '', /application\/json/);
@@ -30,10 +30,10 @@ test('Endpoint /api/office dan vendor /vendor/three/*', async (t) => {
     assert.ok(data.office);
     assert.ok(data.idle_lines);
     assert.ok(Array.isArray(data.personas));
-    assert.equal(data.personas.length, 4);
+    assert.equal(data.personas.length, 6);
 
     const personaIds = data.personas.map((p) => p.id);
-    assert.deepEqual(personaIds.sort(), ['alex', 'betty', 'greg', 'windry']);
+    assert.deepEqual(personaIds.sort(), ['alex', 'betty', 'codex', 'greg', 'hermes', 'windry']);
 
     for (const p of data.personas) {
       assert.equal(p.desk_spot, `desk_${p.id}`);

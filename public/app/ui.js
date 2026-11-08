@@ -102,6 +102,12 @@ export class UIManager {
     if (arrived.startsWith('window')) return 'Melihat pemandangan kota 🏙️';
     if (arrived === 'whiteboard') return 'Memeriksa papan delegasi 📋';
     if (arrived.startsWith('lounge_')) return 'Santai sejenak di lounge ✨';
+    if (arrived.startsWith('ps5_sofa')) return 'Bermain game di PlayStation 5 🎮';
+    if (arrived.startsWith('meditation_') || arrived === 'buddha_altar') return 'Meditasi hening di altar Buddha 🧘';
+    if (arrived.startsWith('sunken_tatami')) return 'Duduk santai di sunken tatami 🍵';
+    if (arrived === 'reception_desk') return 'Menyambut di meja lobi 🌸';
+    if (arrived === 'storage_rack') return 'Memeriksa kapasitas memori di gudang 📦';
+    if (arrived === 'atelier_agy') return 'Melukis di Art Atelier (agy) 🎨';
     if (arrived.startsWith('desk_')) return 'Duduk santai di meja 🪑';
     return 'Santai di kantor ☕';
   }
@@ -454,5 +460,81 @@ export class UIManager {
     totalTr.appendChild(tdTotalTokens);
     totalTr.appendChild(tdTotalCost);
     tokenTbody.appendChild(totalTr);
+  }
+
+  updateDirector(dirData, personasMap = new Map()) {
+    if (!dirData) return;
+
+    const titleEl = document.getElementById('dir-status-title');
+    const badgeEl = document.getElementById('dir-status-badge');
+    const descEl = document.getElementById('dir-status-desc');
+    const listEl = document.getElementById('director-memories-list');
+
+    if (titleEl) {
+      titleEl.textContent = dirData.enabled
+        ? `Director: Aktif (${dirData.model || 'LLM'})`
+        : 'Director: Bawaan (Zero-Token)';
+    }
+
+    if (badgeEl) {
+      if (dirData.enabled) {
+        badgeEl.textContent = 'LLM Live';
+        badgeEl.style.background = 'rgba(59, 130, 246, 0.2)';
+        badgeEl.style.color = '#3b82f6';
+      } else {
+        badgeEl.textContent = 'Zero-Token';
+        badgeEl.style.background = 'rgba(16, 185, 129, 0.15)';
+        badgeEl.style.color = '#10b981';
+      }
+    }
+
+    if (descEl && dirData.stats) {
+      const calls = dirData.stats.callsToday || 0;
+      const cost = dirData.stats.costUsdToday ? `$${dirData.stats.costUsdToday.toFixed(4)}` : '$0.00';
+      descEl.textContent = dirData.enabled
+        ? `Panggilan hari ini: ${calls} kali • Estimasi biaya: ${cost}. Obrolan santai otomatis dipicu saat semua persona idle.`
+        : 'Obrolan santai otomatis berjalan via skenario procedural Three.js tanpa konsumsi token LLM.';
+    }
+
+    if (listEl) {
+      const memories = dirData.recent_memories || [];
+      if (memories.length === 0) {
+        listEl.innerHTML = '<div style="color: var(--text-dim); font-size: 12px; padding: 8px;">Belum ada catatan memori khusus. Tim santai dengan percakapan bawaan.</div>';
+        return;
+      }
+
+      listEl.replaceChildren();
+      memories.forEach((m) => {
+        const item = document.createElement('div');
+        item.className = 'task-item';
+
+        const left = document.createElement('div');
+        left.className = 'task-item-left';
+
+        const personaObj = personasMap.get(m.persona);
+        const avatar = document.createElement('span');
+        avatar.className = 'task-badge';
+        avatar.textContent = personaObj ? personaObj.name : m.persona;
+        if (personaObj?.color) {
+          avatar.style.background = `${personaObj.color}22`;
+          avatar.style.color = personaObj.color;
+        }
+
+        const note = document.createElement('span');
+        note.className = 'task-title';
+        note.textContent = m.note;
+
+        left.appendChild(avatar);
+        left.appendChild(note);
+
+        const time = document.createElement('span');
+        time.className = 'task-time';
+        time.textContent = m.ts ? relTime(m.ts) : '';
+
+        item.appendChild(left);
+        item.appendChild(time);
+        listEl.appendChild(item);
+      });
+    }
   }
 }

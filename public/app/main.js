@@ -74,12 +74,16 @@ async function startApp() {
         greg: 'lounge_1',
         betty: 'tv',
         windry: 'coffee',
+        codex: 'desk_codex',
+        hermes: 'desk_hermes',
       }
     : {
         alex: 'lounge_2',
         greg: 'lounge_1',
         betty: 'tv',
         windry: 'coffee',
+        codex: 'ps5_sofa_1',
+        hermes: 'lounge_3',
       };
 
   const charactersMap = new Map();
@@ -126,10 +130,12 @@ async function startApp() {
   // 8. Logika Mode Demo (?demo=1) vs Mode Live (Data Nyata)
   if (isDemo) {
     const demoTasks = [
-      { persona: 'alex', title: 'Optimasi shortestPath graf waypoint', id: 'TSK-101' },
+      { persona: 'alex', title: 'Render visual 3D Kairosoft & prop shader (Agy Artist)', id: 'TSK-101' },
       { persona: 'greg', title: 'Review roadmap & koordinasi sprint tim', id: 'TSK-102' },
       { persona: 'betty', title: 'Sinkronisasi arsip & dokumen Google Drive', id: 'TSK-103' },
       { persona: 'windry', title: 'Pemetaan mitigasi risiko & skenario taktis', id: 'TSK-104' },
+      { persona: 'codex', title: 'Review second opinion draf arsitektur sistem', id: 'TSK-105' },
+      { persona: 'hermes', title: 'Dispatch orkestrasi task & load balancing', id: 'TSK-106' },
     ];
 
     const demoSnapshot = {
@@ -266,6 +272,32 @@ async function startApp() {
       }
     }
 
+    async function syncSystemMetrics() {
+      try {
+        const sysRes = await fetch('/api/system');
+        if (sysRes.ok) {
+          const sysData = await sysRes.json();
+          if (sysData?.metrics?.storage_boxes_count != null && scene.updateStorageBoxes) {
+            scene.updateStorageBoxes(sysData.metrics.storage_boxes_count);
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal memuat /api/system:', err);
+      }
+    }
+
+    async function syncDirectorStatus() {
+      try {
+        const dirRes = await fetch('/api/director');
+        if (dirRes.ok) {
+          const dirData = await dirRes.json();
+          ui.updateDirector(dirData, personasMap);
+        }
+      } catch (err) {
+        console.warn('Gagal memuat /api/director:', err);
+      }
+    }
+
     // Debounce timer
     let historyDebounceTimer = null;
     function scheduleHistoryReload() {
@@ -292,9 +324,13 @@ async function startApp() {
       console.warn('Gagal memuat /api/state:', err);
     }
 
-    // 2. Ambil data riwayat tugas dan penggunaan token
+    // 2. Ambil data riwayat tugas, penggunaan token, dan telemetri RAM sistem
     await loadHistory();
     await loadUsage();
+    await syncSystemMetrics();
+    setInterval(syncSystemMetrics, 10000);
+    await syncDirectorStatus();
+    setInterval(syncDirectorStatus, 30000);
 
     // 3. Sambungkan ke SSE /api/stream
     if (window.EventSource) {

@@ -5,7 +5,7 @@
     "Sprint kali ini on track, aman terkendali.",
     "Ada ide baru buat efisiensi kerjaan kita?",
     "Santai dulu 5 menit sebelum delegasi berikutnya.",
-    "Betty, Alex, Windry — mantap kerjaannya hari ini.",
+    "Betty, Alex, Windry, Codex — mantap kerjaannya hari ini.",
     "Ngeliat pemandangan kota bentar biar pikiran jernih.",
     "Kopi pantry aromanya mantap banget siang ini.",
     "Review delegasi bentar di whiteboard ah.",
@@ -46,6 +46,18 @@
     "Satu langkah lebih maju dari potensi masalah.",
     "Semua target hari ini tereksekusi sesuai rencana.",
     "Evaluasi risiko selesai, semua jalur hijau."
+  ],
+  "codex": [
+    "Draf kode dan PR sudah ku-review, logikanya solid tapi ada edge case kecil.",
+    "Aroma dupa di Meditation Room bikin pikiran hening dan fokus saat membaca dokumen.",
+    "Rehat bentar, mau mampir ke Game Room main PS5 barang 1 ronde.",
+    "Second opinion teknis sudah siap, struktur modulnya bisa di-decouple sedikit lagi.",
+    "Kode yang indah itu layaknya prosa: ringkas, bertenaga, dan mudah dipahami.",
+    "Duduk di tatami sambil minum teh hijau, review dokumen teknis jadi lebih jernih.",
+    "Analisis teks dan ringkasan PRD sudah selesai kutelaah.",
+    "Periksa kembali boundary condition sebelum push ke staging.",
+    "Second opinion objektif selalu membantu menemukan blind spot sistem.",
+    "Suasana kantor Kairosoft ini nyaman buat membaca dan menelaah kode."
   ],
   "dialogues": [
     {
@@ -102,6 +114,20 @@
       "lines": [
         { "speaker": "windry", "text": "Mbak Betty, ngopi bareng dulu di lounge?" },
         { "speaker": "betty", "text": "Boleh Windry, istirahat 5 menit sebelum tugas baru masuk." }
+      ]
+    },
+    {
+      "speakers": ["codex", "greg"],
+      "lines": [
+        { "speaker": "codex", "text": "Mas Greg, review second opinion untuk draf PRD sudah selesai ditelaah." },
+        { "speaker": "greg", "text": "Terima kasih Codex, telaah kritismu membantu menajamkan arsitektur kita." }
+      ]
+    },
+    {
+      "speakers": ["codex", "alex"],
+      "lines": [
+        { "speaker": "codex", "text": "Alex, aku sudah cek implementasi modul tadi, alur exception-nya sudah rapi." },
+        { "speaker": "alex", "text": "Sip Codex, second opinion darimu bikin kita makin yakin sebelum rilis." }
       ]
     }
   ]
